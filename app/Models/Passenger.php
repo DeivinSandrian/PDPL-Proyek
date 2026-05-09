@@ -5,17 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BookingDetail extends Model
+class Passenger extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'passenger_id';
+    public $timestamps = false;
+
     protected $fillable = [
         'booking_id',
-        'seat_number',
+        'full_name',
+        'identity_number',
+        'phone',
     ];
 
     public function booking()
     {
-        return $this->belongsTo(Booking::class);
+        return $this->belongsTo(Booking::class, 'booking_id');
     }
 }

@@ -9,14 +9,18 @@ class Route extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'route_id';
+    public $timestamps = false;
+
     protected $fillable = [
-        'origin',
-        'destination',
-        'distance',
+        'origin_city',
+        'destination_city',
+        'distance_km',
+        'duration',
     ];
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'route_id');
     }
 }

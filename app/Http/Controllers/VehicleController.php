@@ -16,10 +16,10 @@ class VehicleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string',
-            'type' => 'required|string',
+            'plate_number' => 'required|string|max:20',
+            'vehicle_type' => 'nullable|string|max:50',
             'capacity' => 'required|integer',
-            'license_plate' => 'required|string|unique:vehicles',
+            'status' => 'nullable|string|max:20',
         ]);
 
         $vehicle = Vehicle::create($validated);
@@ -28,16 +28,16 @@ class VehicleController extends Controller
 
     public function show(Vehicle $vehicle)
     {
-        return response()->json($vehicle);
+        return response()->json($vehicle->load('seats'));
     }
 
     public function update(Request $request, Vehicle $vehicle)
     {
         $validated = $request->validate([
-            'name' => 'string',
-            'type' => 'string',
+            'plate_number' => 'string|max:20',
+            'vehicle_type' => 'string|max:50',
             'capacity' => 'integer',
-            'license_plate' => 'string|unique:vehicles,license_plate,' . $vehicle->id,
+            'status' => 'string|max:20',
         ]);
 
         $vehicle->update($validated);

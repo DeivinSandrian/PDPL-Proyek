@@ -9,15 +9,23 @@ class Vehicle extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'vehicle_id';
+    public $timestamps = false;
+
     protected $fillable = [
-        'name',
-        'type',
+        'plate_number',
+        'vehicle_type',
         'capacity',
-        'license_plate',
+        'status',
     ];
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'vehicle_id');
+    }
+
+    public function seats()
+    {
+        return $this->hasMany(Seat::class, 'vehicle_id');
     }
 }

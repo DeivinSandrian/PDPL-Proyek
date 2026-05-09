@@ -13,13 +13,13 @@ class ScheduleController extends Controller
 
         if ($request->has('origin')) {
             $query->whereHas('route', function($q) use ($request) {
-                $q->where('origin', 'like', '%' . $request->origin . '%');
+                $q->where('origin_city', 'like', '%' . $request->origin . '%');
             });
         }
 
         if ($request->has('destination')) {
             $query->whereHas('route', function($q) use ($request) {
-                $q->where('destination', 'like', '%' . $request->destination . '%');
+                $q->where('destination_city', 'like', '%' . $request->destination . '%');
             });
         }
 
@@ -30,11 +30,12 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'route_id' => 'required|exists:routes,id',
+            'vehicle_id' => 'required|exists:vehicles,vehicle_id',
+            'route_id' => 'required|exists:routes,route_id',
             'departure_time' => 'required|date',
-            'arrival_time' => 'required|date|after:departure_time',
+            'arrival_estimate' => 'required|date|after:departure_time',
             'price' => 'required|numeric',
+            'status' => 'nullable|string|max:20',
         ]);
 
         $schedule = Schedule::create($validated);
@@ -49,11 +50,12 @@ class ScheduleController extends Controller
     public function update(Request $request, Schedule $schedule)
     {
         $validated = $request->validate([
-            'vehicle_id' => 'exists:vehicles,id',
-            'route_id' => 'exists:routes,id',
+            'vehicle_id' => 'exists:vehicles,vehicle_id',
+            'route_id' => 'exists:routes,route_id',
             'departure_time' => 'date',
-            'arrival_time' => 'date|after:departure_time',
+            'arrival_estimate' => 'date|after:departure_time',
             'price' => 'numeric',
+            'status' => 'string|max:20',
         ]);
 
         $schedule->update($validated);

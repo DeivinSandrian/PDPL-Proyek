@@ -9,26 +9,39 @@ class Schedule extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'schedule_id';
+    public $timestamps = false;
+
     protected $fillable = [
-        'vehicle_id',
         'route_id',
+        'vehicle_id',
         'departure_time',
-        'arrival_time',
+        'arrival_estimate',
         'price',
+        'status',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'departure_time' => 'datetime',
+            'arrival_estimate' => 'datetime',
+            'price' => 'decimal:2',
+        ];
+    }
 
     public function vehicle()
     {
-        return $this->belongsTo(Vehicle::class);
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 
     public function route()
     {
-        return $this->belongsTo(Route::class);
+        return $this->belongsTo(Route::class, 'route_id');
     }
 
     public function bookings()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'schedule_id');
     }
 }
