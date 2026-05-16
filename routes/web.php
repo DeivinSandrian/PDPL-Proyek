@@ -38,13 +38,93 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('bookings/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('bookings.update-status');
 });
 
-// Customer routes
-Route::middleware('auth')->prefix('customer')->name('customer.')->group(function () {
-    Route::get('schedules', [ScheduleController::class, 'index'])->name('schedules.index');
-    Route::get('schedules/{schedule}', [ScheduleController::class, 'show'])->name('schedules.show');
-    Route::post('bookings', [BookingController::class, 'store'])->name('bookings.store');
-    Route::get('bookings', [BookingController::class, 'index'])->name('bookings.index');
-    Route::get('bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+/*
+|--------------------------------------------------------------------------
+| Customer Routes (R16.1)
+|--------------------------------------------------------------------------
+|
+| All customer-facing self-service routes live under the `customer.` name
+| prefix and `/customer` URL prefix, guarded by the `auth` and `customer`
+| middleware stack. Controller classes referenced by these routes are
+| implemented in subsequent tasks (5, 7, 8, 9, 10, 13, 16, 18, 19, 20);
+| until then each route resolves to a 501 stub closure so that
+| `php artisan route:list` and any links from existing views resolve
+| without "Class not found" errors.
+|
+*/
+Route::middleware(['auth', 'customer'])->prefix('customer')->name('customer.')->group(function () {
+
+    // --- Schedule search & detail (Task 5) ---------------------------------
+    Route::get('schedules', fn () => abort(501, 'Not implemented yet'))
+        ->name('schedules.index');
+    Route::post('schedules/search', fn () => abort(501, 'Not implemented yet'))
+        ->name('schedules.search');
+    Route::get('schedules/{schedule}', fn () => abort(501, 'Not implemented yet'))
+        ->name('schedules.show');
+
+    // --- Seat map & seat hold (Tasks 7 & 8) --------------------------------
+    Route::get('schedules/{schedule}/seats', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.seats');
+    Route::get('schedules/{schedule}/availability', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.availability');
+    Route::post('schedules/{schedule}/hold', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.holdSelection');
+
+    // --- Booking history & detail (Task 16) --------------------------------
+    Route::get('bookings', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.index');
+    Route::get('bookings/search', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.searchByCode');
+    Route::get('bookings/{booking}', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.show');
+
+    // --- Pickup / dropoff selection (Task 9) -------------------------------
+    Route::get('bookings/{booking}/stop-points', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.stop-points.edit');
+    Route::patch('bookings/{booking}/stop-points', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.stop-points.update');
+
+    // --- Passenger information (Task 10) -----------------------------------
+    Route::get('bookings/{booking}/passengers', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.passengers.edit');
+    Route::patch('bookings/{booking}/passengers', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.passengers.update');
+
+    // --- Payment (Task 13) -------------------------------------------------
+    Route::get('bookings/{booking}/payment', fn () => abort(501, 'Not implemented yet'))
+        ->name('payment.show');
+    Route::post('bookings/{booking}/payment', fn () => abort(501, 'Not implemented yet'))
+        ->name('payment.initiate');
+
+    // --- E-ticket download (Task 18) ---------------------------------------
+    Route::get('bookings/{booking}/eticket', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.eticket.download');
+
+    // --- Cancellation request (Task 19) ------------------------------------
+    Route::get('bookings/{booking}/cancellation', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.cancellation.create');
+    Route::post('bookings/{booking}/cancellation', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.cancellation.store');
+
+    // --- Reschedule request (Task 20) --------------------------------------
+    Route::get('bookings/{booking}/reschedule', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.reschedule.create');
+    Route::post('bookings/{booking}/reschedule', fn () => abort(501, 'Not implemented yet'))
+        ->name('bookings.reschedule.store');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Midtrans payment callback (server-to-server webhook)
+|--------------------------------------------------------------------------
+|
+| Lives OUTSIDE the auth/customer group because Midtrans posts directly
+| from its own servers. The payload is signature-verified inside the
+| handler (`PaymentService::handleNotification`) and the route is also
+| exempt from CSRF (configured in bootstrap/app.php in Task 13).
+|
+*/
+Route::post('payment/callback', fn () => abort(501, 'Not implemented yet'))
+    ->name('customer.payment.callback');
 
 require __DIR__.'/auth.php';
