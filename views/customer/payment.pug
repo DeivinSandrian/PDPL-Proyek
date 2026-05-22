@@ -1,0 +1,49 @@
+extends ../layout-customer
+
+block content
+  .page-header
+    h2 Selesaikan Pembayaran Anda
+    p Kode Pemesanan: <strong>##{booking.booking_code}</strong>
+
+  .card(style="margin-top:20px; text-align: center;")
+    if booking.status === 'pending'
+      h3 Segera Lakukan Pembayaran
+      p Waktu Anda untuk membayar sebelum kursi otomatis dibatalkan:
+      .countdown(style="font-size: 2.5em; font-weight: bold; color: var(--danger); margin: 20px 0;" id="timer") 10:00
+      
+      p Total yang harus dibayar:
+      h2(style="color: var(--primary);") Rp #{Number(booking.total_amount).toLocaleString('id-ID')}
+      
+      form(method="POST" action=`/customer/pay/${booking.booking_id}` style="margin-top:30px;")
+        button.btn.btn-success(type="submit" style="font-size: 1.2em; padding: 15px 40px;") (Simulasi) Bayar Sekarang
+        
+      script.
+        const holdExpiredAt = new Date("#{booking.hold_expired_at}").getTime();
+        const timerEl = document.getElementById('timer');
+        
+        const interval = setInterval(() => {
+          const now = new Date().getTime();
+          const distance = holdExpiredAt - now;
+          
+          if (distance < 0) {
+            clearInterval(interval);
+            timerEl.innerHTML = "WAKTU HABIS";
+            setTimeout(() => { window.location.reload(); }, 2000);
+            return;
+          }
+          
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          
+          timerEl.innerHTML = minutes + "m " + seconds + "s ";
+        }, 1000);
+
+    else if booking.status === 'expired'
+      h3(style="color: var(--danger);") Waktu Pembayaran Habis
+      p Maaf, waktu pembayaran Anda telah habis dan pemesanan otomatis dibatalkan.
+      a.btn.btn-primary(href="/customer/dashboard" style="margin-top:20px;") Cari Jadwal Lagi
+      
+    else if booking.status === 'confirmed'
+      h3(style="color: var(--success);") Pembayaran Berhasil!
+      p Tiket Anda sudah aktif. Silakan cek menu Pesanan Saya untuk melihat E-Ticket.
+      a.btn.btn-primary(href="/customer/my-bookings" style="margin-top:20px;") Lihat E-Ticket

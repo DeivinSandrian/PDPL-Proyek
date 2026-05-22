@@ -1,0 +1,32 @@
+extends ../layout-admin
+
+block content
+  .page-header
+    h2 Reschedule Pemesanan
+    p Ganti jadwal keberangkatan untuk pemesanan ID: #{booking.id}
+    div(style="margin-top: 15px;")
+      a.btn.btn-secondary(href="/admin/bookings") &larr; Kembali
+
+  .card
+    h3 Detail Pemesanan Saat Ini
+    ul
+      li Rute: #{booking.origin} &rarr; #{booking.destination}
+      li Penumpang: #{booking.passenger_name || 'Tidak ada data'}
+      li Kursi: #{booking.seat_number}
+
+    hr
+    h3 Pilih Jadwal Baru
+    form(method="POST" action=`/admin/bookings/reschedule/${booking.id}`)
+      .form-grid
+        .form-group
+          label Jadwal Baru
+          select(name="schedule_id" required)
+            option(value="") -- Pilih Jadwal --
+            if schedules && schedules.length
+              each s in schedules
+                if s.schedule_id != booking.schedule_id
+                  option(value=s.schedule_id) Berangkat: #{new Date(s.departure_time).toLocaleString('id-ID')} | Kendaraan ID: #{s.vehicle_id}
+        .form-group
+          label Nomor Kursi Baru
+          input(type="text" name="seat_number" placeholder="Contoh: A2" required)
+      button.btn.btn-primary(type="submit") Simpan Perubahan Reschedule

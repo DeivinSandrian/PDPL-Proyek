@@ -1,0 +1,30 @@
+extends ../layout-customer
+
+block content
+  .hero-section
+    h1 Halo, #{user.username}!
+    p Mau pergi ke mana hari ini?
+  
+  .card(style="max-width: 800px; margin: -80px auto 20px auto; position: relative; z-index: 10;")
+    h3 Cari Jadwal Keberangkatan
+    form(method="GET" action="/customer/search" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;")
+      .form-group(style="flex: 1; min-width: 200px;")
+        label Kota Asal
+        select(name="origin" required)
+          option(value="") -- Pilih Kota Asal --
+          if origins && origins.length
+            each o in origins
+              option(value=o.origin_city) #{o.origin_city}
+      .form-group(style="flex: 1; min-width: 200px;")
+        label Kota Tujuan
+        select(name="destination" required)
+          option(value="") -- Pilih Tujuan --
+          if destinations && destinations.length
+            each d in destinations
+              option(value=d.destination_city) #{d.destination_city}
+      .form-group(style="flex: 1; min-width: 200px;")
+        label Tanggal Keberangkatan
+        input(type="date" name="date" required)
+      
+      div(style="flex-basis: 100%; text-align: right;")
+        button.btn.btn-primary(type="submit" style="width: 100%;") Cari Tiket

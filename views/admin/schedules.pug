@@ -1,0 +1,74 @@
+extends ../layout-admin
+
+block content
+  .page-header
+    h2 Manajemen Jadwal
+    p Kelola semua jadwal perjalanan travel
+
+  .card
+    h3 Tambah Jadwal Baru
+    form(method="POST" action="/admin/schedules")
+      .form-grid
+        .form-group
+          label Kota Asal
+          input(type="text" name="origin" placeholder="Contoh: Jakarta" required)
+        .form-group
+          label Kota Tujuan
+          input(type="text" name="destination" placeholder="Contoh: Bandung" required)
+        .form-group
+          label Waktu Berangkat
+          input(type="datetime-local" name="departure" required)
+        .form-group
+          label Waktu Tiba
+          input(type="datetime-local" name="arrival" required)
+        .form-group
+          label Kendaraan
+          select(name="vehicle_id")
+            option(value="") -- Pilih Kendaraan --
+            if vehicles && vehicles.length
+              each v in vehicles
+                option(value=v.vehicle_id) #{v.plate_number} (#{v.vehicle_type})
+        .form-group
+          label Titik Jemput
+          input(type="text" name="pickup_point" placeholder="Contoh: Terminal Lebak Bulus" required)
+        .form-group
+          label Titik Turun
+          input(type="text" name="dropoff_point" placeholder="Contoh: Terminal Leuwi Panjang" required)
+        .form-group
+          label Harga (Rp)
+          input(type="number" name="price" placeholder="150000" required)
+      button.btn.btn-primary(type="submit") Simpan Jadwal
+
+  .card
+    h3 Daftar Jadwal
+    if schedules && schedules.length
+      .table-wrapper
+        table
+          thead
+            tr
+              th ID
+              th Rute
+              th Jemput - Turun
+              th Berangkat
+              th Tiba
+              th Kendaraan
+              th Harga
+              th Aksi
+          tbody
+            each s in schedules
+              tr
+                td #{s.schedule_id}
+                td #{s.origin} → #{s.destination}
+                td #{s.pickup_point || '-'} - #{s.dropoff_point || '-'}
+                td #{new Date(s.departure_time).toLocaleString('id-ID')}
+                td #{new Date(s.arrival_estimate).toLocaleString('id-ID')}
+                td #{s.vehicle_name || '-'}
+                td Rp #{Number(s.price).toLocaleString('id-ID')}
+                td
+                  .actions
+                    form(method="POST" action=`/admin/schedules/delete/${s.schedule_id}`)
+                      button.btn.btn-danger.btn-sm(type="submit") Hapus
+    else
+      .empty-state
+        h3 Belum ada jadwal
+        p Tambahkan jadwal pertama menggunakan form di atas

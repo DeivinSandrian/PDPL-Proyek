@@ -1,0 +1,71 @@
+extends ../layout-customer
+
+block content
+  .page-header
+    h2 Form Pemesanan
+    p Silakan lengkapi data penumpang dan pilih kursi
+    a.btn.btn-secondary(href="javascript:history.back()" style="margin-top:10px;") &larr; Kembali
+
+  .card(style="margin-top:20px;")
+    h3 Rincian Jadwal
+    p
+      strong Rute: 
+      | #{schedule.origin_city} &rarr; #{schedule.destination_city}
+    p
+      strong Keberangkatan: 
+      | #{new Date(schedule.departure_time).toLocaleString('id-ID')}
+    p
+      strong Kendaraan: 
+      | #{schedule.plate_number} (#{schedule.vehicle_type} - #{schedule.capacity} kursi)
+    p
+      strong Harga: 
+      | Rp #{Number(schedule.price).toLocaleString('id-ID')}
+
+  form(method="POST" action=`/customer/booking/${schedule.schedule_id}` style="margin-top:20px;")
+    .card
+      h3 Data Penumpang
+      .form-group
+        label Nama Lengkap Penumpang
+        input(type="text" name="passenger_name" value=user.username required)
+      if schedule.pickup_point || schedule.dropoff_point
+        .form-group
+          label Informasi Titik Kumpul
+          p(style="background:#f4f4f4; padding:10px; border-radius:5px;")
+            | Titik Jemput: <strong>#{schedule.pickup_point || '-'}</strong> <br>
+            | Titik Turun: <strong>#{schedule.dropoff_point || '-'}</strong>
+    
+    .card(style="margin-top:20px;")
+      h3 Pilih Kursi
+      p Silakan pilih salah satu kursi yang tersedia di bawah ini.
+      .seat-grid(style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px; justify-content: center;")
+        - for (var i = 1; i <= schedule.capacity; i++)
+          - var seatNum = String(i)
+          - var isBooked = bookedSeats.includes(seatNum)
+          label(style=`padding: 15px 20px; border: 2px solid ${isBooked ? 'var(--border)' : 'var(--primary)'}; border-radius: 12px; cursor: ${isBooked ? 'not-allowed' : 'pointer'}; background: ${isBooked ? 'rgba(0,0,0,0.5)' : 'rgba(255, 75, 43, 0.1)'}; color: ${isBooked ? 'var(--text-muted)' : 'var(--text-main)'}; opacity: ${isBooked ? '0.5' : '1'}; text-align: center; font-family: 'Outfit', sans-serif; min-width: 80px; transition: all 0.3s;`)
+            input(type="radio" name="seat_number" value=seatNum disabled=isBooked required style="display:none;")
+            | Kursi #{seatNum}
+            if isBooked
+              div(style="font-size: 11px; margin-top: 5px; font-weight: normal;") (Terisi)
+            else
+              div(style="font-size: 11px; margin-top: 5px; font-weight: normal; color: #34d399;") (Tersedia)
+      
+      div(style="margin-top:40px;")
+        button.btn.btn-primary(type="submit" style="width: 100%; font-size: 1.2em; padding: 18px;") Lanjut ke Pembayaran
+
+  script.
+    const labels = document.querySelectorAll('.seat-grid label');
+    labels.forEach(label => {
+      const input = label.querySelector('input');
+      if (!input.disabled) {
+        label.addEventListener('click', () => {
+          labels.forEach(l => {
+            if (!l.querySelector('input').disabled) {
+              l.style.background = 'rgba(255, 75, 43, 0.1)';
+              l.style.color = 'var(--text-main)';
+            }
+          });
+          label.style.background = 'var(--primary-gradient)';
+          label.style.color = '#fff';
+        });
+      }
+    });

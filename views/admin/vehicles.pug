@@ -1,0 +1,57 @@
+extends ../layout-admin
+
+block content
+  .page-header
+    h2 Manajemen Kendaraan
+    p Kelola armada kendaraan travel
+
+  .card
+    h3 Tambah Kendaraan Baru
+    form(method="POST" action="/admin/vehicles")
+      .form-grid
+        .form-group
+          label Nama Kendaraan
+          input(type="text" name="name" placeholder="Contoh: Hiace Commuter H-1" required)
+        .form-group
+          label Tipe
+          select(name="type" required)
+            option(value="") -- Pilih Tipe --
+            option(value="Minibus") Minibus
+            option(value="Bus") Bus
+            option(value="Executive") Executive
+            option(value="Premium") Premium
+        .form-group
+          label Kapasitas Kursi
+          input(type="number" name="capacity" placeholder="14" required)
+        .form-group
+          label URL Gambar (opsional)
+          input(type="text" name="image_url" placeholder="https://...")
+      button.btn.btn-primary(type="submit") Simpan Kendaraan
+
+  .card
+    h3 Daftar Kendaraan
+    if vehicles && vehicles.length
+      .table-wrapper
+        table
+          thead
+            tr
+              th ID
+              th Nama/Plat Nomor
+              th Tipe
+              th Kapasitas
+              th Aksi
+          tbody
+            each v in vehicles
+              tr
+                td #{v.vehicle_id}
+                td #{v.plate_number}
+                td #{v.vehicle_type}
+                td #{v.capacity} Penumpang
+                td
+                  .actions
+                    form(method="POST" action=`/admin/vehicles/delete/${v.vehicle_id}`)
+                      button.btn.btn-danger.btn-sm(type="submit") Hapus
+    else
+      .empty-state
+        h3 Belum ada kendaraan
+        p Tambahkan kendaraan pertama menggunakan form di atas

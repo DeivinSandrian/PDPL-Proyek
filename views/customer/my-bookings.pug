@@ -1,0 +1,51 @@
+extends ../layout-customer
+
+block content
+  .page-header
+    h2 Pesanan Saya
+    p Kelola riwayat pemesanan tiket travel Anda
+  
+  .card(style="margin-top:20px;")
+    if bookings && bookings.length
+      .table-wrapper
+        table
+          thead
+            tr
+              th Kode
+              th Rute
+              th Berangkat
+              th Kursi
+              th Status
+              th Total
+              th Aksi
+          tbody
+            each b in bookings
+              tr
+                td <strong>#{b.booking_code}</strong>
+                td #{b.origin_city} &rarr; #{b.destination_city}
+                td #{new Date(b.departure_time).toLocaleString('id-ID')}
+                td #{b.seat_id}
+                td
+                  if b.status === 'pending'
+                    span.badge.badge-pending Menunggu Pembayaran
+                  else if b.status === 'confirmed'
+                    span.badge.badge-confirmed Lunas (E-Ticket Aktif)
+                  else if b.status === 'expired'
+                    span.badge.badge-canceled Kadaluarsa
+                  else
+                    span.badge.badge-canceled Dibatalkan
+                td Rp #{Number(b.total_amount).toLocaleString('id-ID')}
+                td
+                  .actions
+                    if b.status === 'pending'
+                      a.btn.btn-success.btn-sm(href=`/customer/payment/${b.booking_id}`) Bayar
+                      form(method="POST" action=`/customer/booking/${b.booking_id}/cancel` style="display:inline;")
+                        button.btn.btn-danger.btn-sm(type="submit") Batalkan
+                    if b.status === 'confirmed'
+                      form(method="POST" action=`/customer/booking/${b.booking_id}/cancel` style="display:inline;")
+                        button.btn.btn-warning.btn-sm(type="submit" onclick="return confirm('Anda yakin ingin membatalkan pesanan (Refund)?')") Batalkan
+    else
+      .empty-state
+        h3 Belum ada pesanan
+        p Anda belum pernah memesan tiket.
+        a.btn.btn-primary(href="/customer/dashboard" style="margin-top:15px;") Cari Jadwal Sekarang

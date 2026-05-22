@@ -1,0 +1,36 @@
+extends layout
+
+block content
+  .dashboard-header
+    h2 Dashboard Admin
+    a.btn.btn-secondary(href="/") Logout
+    
+  .dashboard-grid
+    .stat-card
+      h3 120
+      p Total Pemesanan
+    .stat-card
+      h3 15
+      p Jadwal Aktif
+    .stat-card
+      h3 8
+      p Armada Tersedia
+      
+  .content-section
+    h3 Manajemen Jadwal Travel
+    table
+      thead
+        tr
+          th Rute
+          th Tanggal & Jam
+          th Kendaraan
+          th Kursi Tersedia
+          th Aksi
+      tbody
+        tr
+          td Jakarta - Bandung
+          td 25 Mei 2026, 08:00
+          td Hiace Commuter (H-1)
+          td 10/14
+          td
+            button.btn(style="padding: 0.4rem 0.8rem; font-size: 0.9rem;") Edit

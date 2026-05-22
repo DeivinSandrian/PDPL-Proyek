@@ -1,0 +1,24 @@
+extends ../layout-customer
+
+block content
+  .page-header
+    h2 Hasil Pencarian Jadwal
+    p #{origin} &rarr; #{destination} | Tanggal: #{date}
+    a.btn.btn-secondary(href="/customer/dashboard" style="margin-top:10px;") &larr; Ubah Pencarian
+
+  if schedules && schedules.length
+    .schedule-list(style="display: flex; flex-direction: column; gap: 20px; margin-top: 20px;")
+      each s in schedules
+        .card(style="display: flex; justify-content: space-between; align-items: center; padding: 20px;")
+          div
+            h3(style="margin-bottom: 5px;") #{new Date(s.departure_time).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})} - #{s.arrival_estimate ? new Date(s.arrival_estimate).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) : '?'}
+            p(style="color: #666; margin-bottom: 5px;") 🚘 #{s.plate_number} (#{s.vehicle_type})
+            if s.pickup_point
+              p(style="font-size: 0.9em; color: #888;") Jemput: #{s.pickup_point} | Turun: #{s.dropoff_point || '-'}
+          div(style="text-align: right;")
+            h3(style="color: var(--primary); margin-bottom: 10px;") Rp #{Number(s.price).toLocaleString('id-ID')}
+            a.btn.btn-primary(href=`/customer/booking/${s.schedule_id}`) Pilih Kursi
+  else
+    .empty-state
+      h3 Tidak Ada Jadwal Ditemukan
+      p Maaf, tidak ada jadwal untuk rute dan tanggal tersebut. Silakan coba tanggal lain.

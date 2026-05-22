@@ -1,0 +1,27 @@
+extends ../layout-admin
+
+block content
+  .page-header
+    h2 Notifikasi
+    p Kirim notifikasi dan lihat riwayat
+
+  .card
+    h3 Kirim Notifikasi Baru
+    form(method="POST" action="/admin/notifications")
+      .form-group
+        label Pesan Notifikasi
+        textarea(name="message" rows="3" placeholder="Ketik pesan notifikasi untuk pengguna..." required style="width:100%; resize:vertical;")
+      div(style="margin-top: 1rem;")
+        button.btn.btn-primary(type="submit") Kirim Notifikasi
+
+  .card
+    h3 Riwayat Notifikasi
+    if notifications && notifications.length
+      each n in notifications
+        .notif-item
+          .notif-message #{n.message}
+          .notif-time #{new Date(n.created_at).toLocaleString('id-ID')}
+    else
+      .empty-state
+        h3 Belum ada notifikasi
+        p Notifikasi yang dikirim akan muncul di sini

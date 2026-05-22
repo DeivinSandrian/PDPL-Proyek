@@ -1,0 +1,55 @@
+extends layout
+
+block content
+  // Hero Section
+  section.hero-modern(style="justify-content: center; text-align: center;")
+    .hero-content(style="max-width: 800px; margin: 0 auto;")
+      h1 Jelajahi Nusantara dengan Nyaman & Aman
+      p.hero-subtitle TravelGo hadir sebagai solusi perjalanan darat premium Anda. Nikmati armada mewah, jadwal tepat waktu, dan kemudahan reservasi langsung dari genggaman tangan Anda.
+      .action-buttons(style="justify-content: center;")
+        a.btn.btn-large(href="/login-customer") Mulai Perjalanan
+        a.btn.btn-secondary.btn-large(href="#features") Pelajari Lebih Lanjut
+
+  // Features Section
+  section#features.features-section
+    h2 Kenapa Memilih TravelGo?
+    .features-grid
+      .feature-card
+        .feature-icon ⏱️
+        h3 Tepat Waktu
+        p Keberangkatan selalu sesuai jadwal tanpa perlu menunggu lama atau *ngetem* sembarangan.
+      .feature-card
+        .feature-icon 🛋️
+        h3 Kursi Premium
+        p Desain kursi ergonomis dengan ruang kaki yang sangat lega untuk kenyamanan maksimal.
+      .feature-card
+        .feature-icon 📱
+        h3 Pilih Kursi Bebas
+        p Tentukan posisi duduk favorit Anda secara *real-time* saat memesan secara online.
+
+  // Popular Routes
+  section.routes-section
+    h2 Rute Perjalanan Terpopuler
+    .routes-grid
+      .route-card
+        .route-image(style="background-image: url('https://picsum.photos/id/1048/800/600');")
+        .route-info
+          h3 Jakarta - Bandung
+          p Executive Class | Mulai dari Rp 150.000
+      .route-card
+        .route-image(style="background-image: url('https://picsum.photos/id/1049/800/600');")
+        .route-info
+          h3 Surabaya - Malang
+          p Premium Class | Mulai dari Rp 100.000
+      .route-card
+        .route-image(style="background-image: url('https://picsum.photos/id/1050/800/600');")
+        .route-info
+          h3 Semarang - Yogya
+          p Executive Class | Mulai dari Rp 120.000
+          
+  // CTA Section
+  section.cta-section
+    .cta-card
+      h2 Siap Untuk Perjalanan Berikutnya?
+      p Bergabunglah dengan ribuan penumpang lain yang mempercayakan perjalanannya kepada TravelGo.
+      a.btn.btn-large(href="/login-customer" style="margin-top: 1rem; display: inline-flex;") Daftar / Masuk Sekarang

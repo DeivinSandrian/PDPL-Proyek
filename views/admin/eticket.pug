@@ -1,0 +1,35 @@
+extends ../layout-admin
+
+block content
+  .page-header
+    h2 E-Ticket
+    p Detail tiket dan QR Code
+
+  .card.ticket-card
+    h3 Kode Booking: ##{booking.id}
+    if qrImg
+      img(src=qrImg alt="QR Code Booking")
+    .ticket-info
+      p
+        span.label Rute
+        span #{booking.origin} → #{booking.destination}
+      p
+        span.label Keberangkatan
+        span #{new Date(booking.departure).toLocaleString('id-ID')}
+      p
+        span.label Kursi
+        span #{booking.seat_number}
+      p
+        span.label Email Pemesan
+        span #{booking.email}
+      p
+        span.label Status
+        span
+          if booking.status === 'confirmed'
+            span.badge.badge-confirmed Confirmed
+          else if booking.status === 'pending'
+            span.badge.badge-pending Pending
+          else
+            span.badge.badge-canceled #{booking.status}
+    div(style="margin-top: 1.5rem;")
+      a.btn.btn-primary(href="/admin/bookings") Kembali ke Pemesanan

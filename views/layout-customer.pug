@@ -1,0 +1,18 @@
+doctype html
+html(lang="id")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title= title || 'TravelGo - Customer'
+    link(rel="stylesheet" href="/css/style.css")
+  body
+    header
+      a.logo(href="/customer/dashboard")
+        span 🚗
+        span TravelGo
+      nav.nav-links
+        a(href="/customer/dashboard") Cari Jadwal
+        a(href="/customer/my-bookings") Pesanan Saya
+        a(href="/" class="btn btn-secondary") Logout
+    main
+      block content

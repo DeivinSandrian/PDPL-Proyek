@@ -1,0 +1,59 @@
+extends layout
+
+block content
+  .dashboard-header
+    h2 Selamat Datang, Pelanggan!
+    a.btn.btn-secondary(href="/") Logout
+    
+  .dashboard-grid
+    .stat-card
+      h3 2
+      p Tiket Aktif
+    .stat-card
+      h3 5
+      p Riwayat Perjalanan
+      
+  .content-section(style="margin-bottom: 2rem;")
+    h3 Cari Jadwal Travel
+    .search-box(style="box-shadow: none; padding: 0; background: transparent;")
+      .input-group
+        label(for="asal") Kota Asal
+        select#asal(name="asal")
+          option(value="") Pilih Asal
+          option(value="Jakarta") Jakarta
+          option(value="Bandung") Bandung
+          option(value="Semarang") Semarang
+          option(value="Surabaya") Surabaya
+      .input-group
+        label(for="tujuan") Kota Tujuan
+        select#tujuan(name="tujuan")
+          option(value="") Pilih Tujuan
+          option(value="Jakarta") Jakarta
+          option(value="Bandung") Bandung
+          option(value="Semarang") Semarang
+          option(value="Surabaya") Surabaya
+      .input-group
+        label(for="tanggal") Tanggal Keberangkatan
+        input#tanggal(type="date" name="tanggal")
+      
+      button.btn(type="button" onclick="alert('Mencari jadwal...')") Cari Jadwal
+
+  .content-section
+    h3 Tiket Saya (E-Ticket)
+    table
+      thead
+        tr
+          th Kode Booking
+          th Rute
+          th Tanggal
+          th Status
+          th Aksi
+      tbody
+        tr
+          td
+            strong TRX-1092
+          td Jakarta - Bandung
+          td 25 Mei 2026
+          td(style="color: #10b981; font-weight: bold;") Lunas
+          td
+            button.btn(style="padding: 0.4rem 0.8rem; font-size: 0.9rem;") Lihat QR

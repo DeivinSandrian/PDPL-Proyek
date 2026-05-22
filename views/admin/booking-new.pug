@@ -1,0 +1,26 @@
+extends ../layout-admin
+
+block content
+  .page-header
+    h2 Tambah Pemesanan Offline
+    p Buat pesanan secara manual untuk pelanggan offline
+    div(style="margin-top: 15px;")
+      a.btn.btn-secondary(href="/admin/bookings") &larr; Kembali
+
+  .card
+    form(method="POST" action="/admin/bookings/new")
+      .form-grid
+        .form-group
+          label Pilih Jadwal
+          select(name="schedule_id" required)
+            option(value="") -- Pilih Jadwal --
+            if schedules && schedules.length
+              each s in schedules
+                option(value=s.schedule_id) #{s.origin} &rarr; #{s.destination} | #{new Date(s.departure_time).toLocaleString('id-ID')} | Rp #{Number(s.price).toLocaleString('id-ID')}
+        .form-group
+          label Nama Penumpang
+          input(type="text" name="passenger_name" placeholder="Nama Lengkap Penumpang" required)
+        .form-group
+          label Nomor Kursi
+          input(type="text" name="seat_number" placeholder="Contoh: A1" required)
+      button.btn.btn-primary(type="submit") Simpan Pesanan Offline

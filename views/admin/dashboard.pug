@@ -1,0 +1,31 @@
+extends ../layout-admin
+
+block content
+  .page-header
+    h2 Dashboard
+    p Selamat datang, #{user.email}
+
+  .stats-grid
+    .stat-card
+      .stat-value #{stats.totalBookings}
+      .stat-label Total Pemesanan
+    .stat-card
+      .stat-value #{stats.confirmed}
+      .stat-label Terkonfirmasi
+    .stat-card
+      .stat-value Rp #{Number(stats.revenue).toLocaleString('id-ID')}
+      .stat-label Total Pendapatan
+    .stat-card
+      .stat-value #{stats.schedules}
+      .stat-label Jadwal Aktif
+    .stat-card
+      .stat-value #{stats.vehicles}
+      .stat-label Armada Tersedia
+
+  .card
+    h3 Aksi Cepat
+    div(style="display: flex; gap: 1rem; flex-wrap: wrap;")
+      a.btn.btn-primary(href="/admin/schedules") + Tambah Jadwal
+      a.btn.btn-primary(href="/admin/vehicles") + Tambah Kendaraan
+      a.btn.btn-success(href="/admin/bookings") Lihat Pemesanan
+      a.btn.btn-warning(href="/admin/notifications") Kirim Notifikasi
