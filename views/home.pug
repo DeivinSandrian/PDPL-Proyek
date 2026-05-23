@@ -1,55 +1,478 @@
 extends layout
 
 block content
-  // Hero Section
-  section.hero-modern(style="justify-content: center; text-align: center;")
-    .hero-content(style="max-width: 800px; margin: 0 auto;")
-      h1 Jelajahi Nusantara dengan Nyaman & Aman
-      p.hero-subtitle TravelGo hadir sebagai solusi perjalanan darat premium Anda. Nikmati armada mewah, jadwal tepat waktu, dan kemudahan reservasi langsung dari genggaman tangan Anda.
-      .action-buttons(style="justify-content: center;")
-        a.btn.btn-large(href="/login-customer") Mulai Perjalanan
-        a.btn.btn-secondary.btn-large(href="#features") Pelajari Lebih Lanjut
+  // =========================
+  // HERO SECTION
+  // =========================
+  section.hero-modern
+    .hero-overlay
+    .hero-content
+      span.hero-badge ✨ Travel Premium Indonesia
 
-  // Features Section
+      h1
+        | Jelajahi Nusantara
+        br
+        span.highlight dengan Nyaman & Aman
+
+      p.hero-subtitle
+        | TravelGo hadir sebagai solusi perjalanan darat modern dengan armada premium,
+        | jadwal tepat waktu, dan sistem reservasi online yang cepat serta praktis.
+
+      .action-buttons
+        a.btn.btn-primary.btn-large(href="/login-customer")
+          | Mulai Perjalanan
+
+        a.btn.btn-secondary.btn-large(href="#features")
+          | Pelajari Lebih Lanjut
+
+      .hero-stats
+        .stat-box
+          h3 10K+
+          p Penumpang
+
+        .stat-box
+          h3 120+
+          p Armada
+
+        .stat-box
+          h3 24/7
+          p Customer Support
+
+  // =========================
+  // FEATURES SECTION
+  // =========================
   section#features.features-section
-    h2 Kenapa Memilih TravelGo?
+    .section-header
+      h2 Kenapa Memilih TravelGo?
+      p
+        | Kami memberikan pengalaman perjalanan terbaik dengan layanan premium
+        | dan teknologi modern.
+
     .features-grid
+
       .feature-card
         .feature-icon ⏱️
         h3 Tepat Waktu
-        p Keberangkatan selalu sesuai jadwal tanpa perlu menunggu lama atau *ngetem* sembarangan.
+        p
+          | Keberangkatan selalu sesuai jadwal tanpa harus menunggu lama
+          | atau ngetem sembarangan.
+
       .feature-card
         .feature-icon 🛋️
         h3 Kursi Premium
-        p Desain kursi ergonomis dengan ruang kaki yang sangat lega untuk kenyamanan maksimal.
+        p
+          | Nikmati kursi ergonomis dengan ruang kaki luas untuk kenyamanan
+          | maksimal selama perjalanan.
+
       .feature-card
         .feature-icon 📱
         h3 Pilih Kursi Bebas
-        p Tentukan posisi duduk favorit Anda secara *real-time* saat memesan secara online.
+        p
+          | Tentukan posisi duduk favorit Anda secara real-time saat melakukan
+          | pemesanan online.
 
-  // Popular Routes
+      .feature-card
+        .feature-icon 🔒
+        h3 Aman & Terpercaya
+        p
+          | Driver profesional dan armada yang selalu rutin dicek demi keamanan
+          | perjalanan Anda.
+
+      .feature-card
+        .feature-icon 💳
+        h3 Pembayaran Mudah
+        p
+          | Mendukung berbagai metode pembayaran digital dengan proses cepat
+          | dan aman.
+
+      .feature-card
+        .feature-icon 🌍
+        h3 Banyak Pilihan Rute
+        p
+          | Tersedia berbagai rute populer antar kota dengan jadwal yang fleksibel.
+
+  // =========================
+  // POPULAR ROUTES
+  // =========================
   section.routes-section
-    h2 Rute Perjalanan Terpopuler
+    .section-header
+      h2 Rute Perjalanan Terpopuler
+      p Pilihan rute favorit pelanggan TravelGo setiap harinya.
+
     .routes-grid
+
       .route-card
-        .route-image(style="background-image: url('https://picsum.photos/id/1048/800/600');")
+        .route-image(style="background-image: url('https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1200&auto=format&fit=crop');")
+        .route-overlay
         .route-info
-          h3 Jakarta - Bandung
-          p Executive Class | Mulai dari Rp 150.000
+          h3 Jakarta → Bandung
+          p Executive Class
+          span.price Mulai dari Rp 150.000
+
       .route-card
-        .route-image(style="background-image: url('https://picsum.photos/id/1049/800/600');")
+        .route-image(style="background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop');")
+        .route-overlay
         .route-info
-          h3 Surabaya - Malang
-          p Premium Class | Mulai dari Rp 100.000
+          h3 Surabaya → Malang
+          p Premium Class
+          span.price Mulai dari Rp 100.000
+
       .route-card
-        .route-image(style="background-image: url('https://picsum.photos/id/1050/800/600');")
+        .route-image(style="background-image: url('https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop');")
+        .route-overlay
         .route-info
-          h3 Semarang - Yogya
-          p Executive Class | Mulai dari Rp 120.000
-          
-  // CTA Section
+          h3 Semarang → Yogyakarta
+          p Executive Class
+          span.price Mulai dari Rp 120.000
+
+  // =========================
+  // CTA SECTION
+  // =========================
   section.cta-section
     .cta-card
       h2 Siap Untuk Perjalanan Berikutnya?
-      p Bergabunglah dengan ribuan penumpang lain yang mempercayakan perjalanannya kepada TravelGo.
-      a.btn.btn-large(href="/login-customer" style="margin-top: 1rem; display: inline-flex;") Daftar / Masuk Sekarang
+      p
+        | Bergabunglah bersama ribuan penumpang lainnya yang mempercayakan
+        | perjalanannya kepada TravelGo.
+
+      a.btn.btn-primary.btn-large(href="/login-customer")
+        | Daftar / Masuk Sekarang
+
+  // =========================
+  // CUSTOM STYLE
+  // =========================
+  style.
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fb;
+      color: #222;
+    }
+
+    section {
+      padding: 90px 8%;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #111827;
+    }
+
+    .section-header p {
+      color: #6b7280;
+      max-width: 700px;
+      margin: auto;
+      line-height: 1.8;
+    }
+
+    /* HERO */
+    .hero-modern {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
+        url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      color: white;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 850px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      margin-bottom: 25px;
+      font-size: .95rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-content h1 {
+      font-size: 4rem;
+      line-height: 1.2;
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+
+    .highlight {
+      color: #60a5fa;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      max-width: 700px;
+      margin: auto;
+      color: rgba(255,255,255,.88);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 15px 28px;
+      border-radius: 14px;
+      font-weight: 600;
+      transition: .3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-large {
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 10px 25px rgba(37,99,235,.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      background: #1d4ed8;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.25);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,.2);
+    }
+
+    .hero-stats {
+      margin-top: 70px;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+      padding: 22px 30px;
+      border-radius: 18px;
+      min-width: 160px;
+      backdrop-filter: blur(12px);
+    }
+
+    .stat-box h3 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-box p {
+      color: rgba(255,255,255,.8);
+    }
+
+    /* FEATURES */
+    .features-section {
+      background: white;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+    }
+
+    .feature-card {
+      background: #fff;
+      padding: 35px 28px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.06);
+      transition: .3s ease;
+      border: 1px solid #eef2f7;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      background: #eff6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 22px;
+    }
+
+    .feature-card h3 {
+      margin-bottom: 15px;
+      color: #111827;
+    }
+
+    .feature-card p {
+      color: #6b7280;
+      line-height: 1.8;
+    }
+
+    /* ROUTES */
+    .routes-section {
+      background: #f5f7fb;
+    }
+
+    .routes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .route-card {
+      overflow: hidden;
+      border-radius: 24px;
+      position: relative;
+      min-height: 420px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.08);
+      transition: .35s ease;
+    }
+
+    .route-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .route-image {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform .5s ease;
+    }
+
+    .route-card:hover .route-image {
+      transform: scale(1.08);
+    }
+
+    .route-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.8), rgba(0,0,0,.15));
+    }
+
+    .route-info {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      z-index: 2;
+      color: white;
+    }
+
+    .route-info h3 {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+    }
+
+    .route-info p {
+      margin-bottom: 10px;
+      color: rgba(255,255,255,.85);
+    }
+
+    .price {
+      display: inline-block;
+      background: rgba(255,255,255,.15);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: .95rem;
+      backdrop-filter: blur(10px);
+    }
+
+    /* CTA */
+    .cta-section {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+    }
+
+    .cta-card {
+      text-align: center;
+      color: white;
+      max-width: 850px;
+      margin: auto;
+      padding: 70px 40px;
+      border-radius: 30px;
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,.15);
+    }
+
+    .cta-card h2 {
+      font-size: 2.7rem;
+      margin-bottom: 20px;
+    }
+
+    .cta-card p {
+      line-height: 1.9;
+      color: rgba(255,255,255,.88);
+      margin-bottom: 35px;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width: 768px) {
+
+      section {
+        padding: 70px 6%;
+      }
+
+      .hero-content h1 {
+        font-size: 2.7rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .section-header h2 {
+        font-size: 2rem;
+      }
+
+      .cta-card h2 {
+        font-size: 2rem;
+      }
+
+      .hero-stats {
+        gap: 15px;
+      }
+
+      .stat-box {
+        min-width: 130px;
+        padding: 18px;
+      }
+    }

@@ -1,59 +1,447 @@
 extends layout
 
 block content
-  .dashboard-header
-    h2 Selamat Datang, Pelanggan!
-    a.btn.btn-secondary(href="/") Logout
-    
-  .dashboard-grid
-    .stat-card
-      h3 2
-      p Tiket Aktif
-    .stat-card
-      h3 5
-      p Riwayat Perjalanan
-      
-  .content-section(style="margin-bottom: 2rem;")
-    h3 Cari Jadwal Travel
-    .search-box(style="box-shadow: none; padding: 0; background: transparent;")
-      .input-group
-        label(for="asal") Kota Asal
-        select#asal(name="asal")
-          option(value="") Pilih Asal
-          option(value="Jakarta") Jakarta
-          option(value="Bandung") Bandung
-          option(value="Semarang") Semarang
-          option(value="Surabaya") Surabaya
-      .input-group
-        label(for="tujuan") Kota Tujuan
-        select#tujuan(name="tujuan")
-          option(value="") Pilih Tujuan
-          option(value="Jakarta") Jakarta
-          option(value="Bandung") Bandung
-          option(value="Semarang") Semarang
-          option(value="Surabaya") Surabaya
-      .input-group
-        label(for="tanggal") Tanggal Keberangkatan
-        input#tanggal(type="date" name="tanggal")
-      
-      button.btn(type="button" onclick="alert('Mencari jadwal...')") Cari Jadwal
+  section.dashboard-section
 
-  .content-section
-    h3 Tiket Saya (E-Ticket)
-    table
-      thead
-        tr
-          th Kode Booking
-          th Rute
-          th Tanggal
-          th Status
-          th Aksi
-      tbody
-        tr
-          td
-            strong TRX-1092
-          td Jakarta - Bandung
-          td 25 Mei 2026
-          td(style="color: #10b981; font-weight: bold;") Lunas
-          td
-            button.btn(style="padding: 0.4rem 0.8rem; font-size: 0.9rem;") Lihat QR
+    // =========================
+    // TOP HEADER
+    // =========================
+    .dashboard-topbar
+      .welcome-section
+        span.badge ✨ Customer Dashboard
+        h1
+          | Selamat Datang,
+          span  Pelanggan!
+        p
+          | Kelola perjalanan Anda dengan mudah, mulai dari pencarian jadwal,
+          | pemesanan tiket, hingga melihat E-Ticket langsung dari dashboard.
+
+      .topbar-action
+        a.btn.btn-logout(href="/") Logout
+
+    // =========================
+    // STATS
+    // =========================
+    .dashboard-grid
+
+      .stat-card
+        .stat-icon 🎫
+        .stat-info
+          h3 2
+          p Tiket Aktif
+
+      .stat-card
+        .stat-icon 🚌
+        .stat-info
+          h3 5
+          p Riwayat Perjalanan
+
+      .stat-card
+        .stat-icon ⭐
+        .stat-info
+          h3 Gold
+          p Member Status
+
+      .stat-card
+        .stat-icon 📍
+        .stat-info
+          h3 12
+          p Kota Tersedia
+
+    // =========================
+    // SEARCH SECTION
+    // =========================
+    .content-section
+      .section-header
+        .title-group
+          h2 Cari Jadwal Travel
+          p Temukan jadwal perjalanan terbaik Anda dengan cepat.
+
+      .search-card
+        form.search-form
+
+          .input-group
+            label(for="asal") Kota Asal
+            select#asal(name="asal")
+              option(value="") Pilih Kota Asal
+              option(value="Jakarta") Jakarta
+              option(value="Bandung") Bandung
+              option(value="Semarang") Semarang
+              option(value="Surabaya") Surabaya
+
+          .input-group
+            label(for="tujuan") Kota Tujuan
+            select#tujuan(name="tujuan")
+              option(value="") Pilih Kota Tujuan
+              option(value="Jakarta") Jakarta
+              option(value="Bandung") Bandung
+              option(value="Semarang") Semarang
+              option(value="Surabaya") Surabaya
+
+          .input-group
+            label(for="tanggal") Tanggal Keberangkatan
+            input#tanggal(type="date" name="tanggal")
+
+          .button-group
+            button.btn.btn-primary(
+              type="button"
+              onclick="alert('Mencari jadwal perjalanan...')"
+            )
+              | Cari Jadwal
+
+    // =========================
+    // E-TICKET TABLE
+    // =========================
+    .content-section
+      .section-header
+        .title-group
+          h2 Tiket Saya (E-Ticket)
+          p Semua tiket perjalanan aktif Anda akan muncul di sini.
+
+      .table-wrapper
+        table.ticket-table
+
+          thead
+            tr
+              th Kode Booking
+              th Rute
+              th Tanggal
+              th Kelas
+              th Status
+              th Aksi
+
+          tbody
+
+            tr
+              td
+                strong TRX-1092
+              td Jakarta → Bandung
+              td 25 Mei 2026
+              td Executive
+              td
+                span.status.success Lunas
+              td
+                button.btn.btn-small
+                  | Lihat QR
+
+            tr
+              td
+                strong TRX-2231
+              td Surabaya → Malang
+              td 29 Mei 2026
+              td Premium
+              td
+                span.status.pending Menunggu
+              td
+                button.btn.btn-small.btn-secondary
+                  | Detail
+
+  // =========================
+  // STYLE
+  // =========================
+  style.
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#f1f5f9;
+      color:#1e293b;
+    }
+
+    .dashboard-section{
+      min-height:100vh;
+      padding:40px 7%;
+      background:
+        linear-gradient(to bottom, #eff6ff, #f8fafc);
+    }
+
+    /* TOPBAR */
+    .dashboard-topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      margin-bottom:40px;
+      flex-wrap:wrap;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:10px 18px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#2563eb;
+      font-size:.9rem;
+      font-weight:600;
+      margin-bottom:18px;
+    }
+
+    .welcome-section h1{
+      font-size:3rem;
+      margin-bottom:15px;
+      line-height:1.2;
+      color:#0f172a;
+    }
+
+    .welcome-section h1 span{
+      color:#2563eb;
+    }
+
+    .welcome-section p{
+      color:#64748b;
+      line-height:1.9;
+      max-width:720px;
+    }
+
+    /* BUTTON */
+    .btn{
+      border:none;
+      cursor:pointer;
+      text-decoration:none;
+      padding:14px 22px;
+      border-radius:16px;
+      font-weight:600;
+      transition:.3s;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btn-primary{
+      background:#2563eb;
+      color:white;
+      box-shadow:0 10px 25px rgba(37,99,235,.25);
+    }
+
+    .btn-primary:hover{
+      background:#1d4ed8;
+      transform:translateY(-2px);
+    }
+
+    .btn-secondary{
+      background:#e2e8f0;
+      color:#0f172a;
+    }
+
+    .btn-secondary:hover{
+      background:#cbd5e1;
+    }
+
+    .btn-logout{
+      background:#ef4444;
+      color:white;
+      box-shadow:0 10px 20px rgba(239,68,68,.2);
+    }
+
+    .btn-logout:hover{
+      background:#dc2626;
+      transform:translateY(-2px);
+    }
+
+    .btn-small{
+      padding:10px 16px;
+      font-size:.9rem;
+      border-radius:12px;
+      background:#2563eb;
+      color:white;
+    }
+
+    .btn-small:hover{
+      background:#1d4ed8;
+    }
+
+    /* STATS */
+    .dashboard-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+      gap:25px;
+      margin-bottom:40px;
+    }
+
+    .stat-card{
+      background:white;
+      border-radius:24px;
+      padding:28px;
+      display:flex;
+      align-items:center;
+      gap:20px;
+      box-shadow:0 10px 30px rgba(15,23,42,.06);
+      transition:.3s;
+      border:1px solid #e2e8f0;
+    }
+
+    .stat-card:hover{
+      transform:translateY(-6px);
+    }
+
+    .stat-icon{
+      width:70px;
+      height:70px;
+      border-radius:20px;
+      background:#eff6ff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:2rem;
+    }
+
+    .stat-info h3{
+      font-size:2rem;
+      margin-bottom:5px;
+      color:#0f172a;
+    }
+
+    .stat-info p{
+      color:#64748b;
+    }
+
+    /* CONTENT */
+    .content-section{
+      background:white;
+      border-radius:30px;
+      padding:35px;
+      margin-bottom:35px;
+      box-shadow:0 10px 30px rgba(15,23,42,.05);
+      border:1px solid #e2e8f0;
+    }
+
+    .section-header{
+      margin-bottom:30px;
+    }
+
+    .title-group h2{
+      font-size:2rem;
+      margin-bottom:10px;
+      color:#0f172a;
+    }
+
+    .title-group p{
+      color:#64748b;
+      line-height:1.8;
+    }
+
+    /* SEARCH */
+    .search-card{
+      width:100%;
+    }
+
+    .search-form{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+      gap:22px;
+      align-items:end;
+    }
+
+    .input-group{
+      display:flex;
+      flex-direction:column;
+    }
+
+    .input-group label{
+      margin-bottom:10px;
+      font-weight:600;
+      color:#334155;
+    }
+
+    .input-group input,
+    .input-group select{
+      width:100%;
+      padding:15px 18px;
+      border-radius:16px;
+      border:1px solid #cbd5e1;
+      outline:none;
+      background:#f8fafc;
+      font-size:1rem;
+      transition:.3s;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus{
+      border-color:#2563eb;
+      background:white;
+      box-shadow:0 0 0 4px rgba(37,99,235,.08);
+    }
+
+    .button-group{
+      display:flex;
+      align-items:end;
+    }
+
+    /* TABLE */
+    .table-wrapper{
+      width:100%;
+      overflow-x:auto;
+    }
+
+    .ticket-table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:750px;
+    }
+
+    .ticket-table thead{
+      background:#eff6ff;
+    }
+
+    .ticket-table th{
+      padding:18px;
+      text-align:left;
+      color:#1e3a8a;
+      font-size:.95rem;
+    }
+
+    .ticket-table td{
+      padding:18px;
+      border-bottom:1px solid #e2e8f0;
+      color:#334155;
+    }
+
+    .ticket-table tbody tr{
+      transition:.2s;
+    }
+
+    .ticket-table tbody tr:hover{
+      background:#f8fafc;
+    }
+
+    .status{
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:.85rem;
+      font-weight:600;
+      display:inline-block;
+    }
+
+    .status.success{
+      background:#dcfce7;
+      color:#15803d;
+    }
+
+    .status.pending{
+      background:#fef3c7;
+      color:#b45309;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+
+      .dashboard-section{
+        padding:25px;
+      }
+
+      .welcome-section h1{
+        font-size:2.2rem;
+      }
+
+      .content-section{
+        padding:25px;
+      }
+
+      .title-group h2{
+        font-size:1.6rem;
+      }
+    }

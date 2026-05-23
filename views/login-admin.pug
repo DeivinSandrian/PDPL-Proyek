@@ -1,18 +1,304 @@
 extends layout
 
 block content
-  .glass-card.form-container
-    h2 Login Admin
-    if error
-      p(style="color: #ef4444; text-align: center; margin-bottom: 1rem; font-size: 0.9rem;") #{error}
-    form(action="/login-admin" method="POST")
-      .form-group
-        label(for="email") Email
-        input#email(type="email" name="email" placeholder="Masukkan email admin" required)
-      .form-group
-        label(for="username") Username
-        input#username(type="text" name="username" placeholder="Masukkan username admin" required)
-      .form-group
-        label(for="password") Password
-        input#password(type="password" name="password" placeholder="Masukkan password admin" required)
-      button.btn.btn-large(type="submit" style="width: 100%") Masuk sebagai Admin
+  section.auth-section.admin-theme
+    .auth-background
+    .auth-container
+
+      // LEFT SIDE
+      .auth-info
+        .brand-badge 🔐 Admin Dashboard
+
+        h1
+          | Panel
+          br
+          span Administrator
+
+        p
+          | Kelola sistem TravelGo dengan mudah mulai dari data pelanggan,
+          | jadwal perjalanan, armada, hingga laporan pemesanan.
+
+        .auth-features
+          .feature-item
+            span.icon 📊
+            p Monitoring data secara real-time
+
+          .feature-item
+            span.icon 🚌
+            p Kelola armada & jadwal perjalanan
+
+          .feature-item
+            span.icon 🛡️
+            p Sistem keamanan administrator
+
+      // RIGHT SIDE
+      .glass-card.form-container
+        h2 Login Admin
+
+        p.form-subtitle
+          | Masuk sebagai administrator untuk mengakses dashboard.
+
+        if error
+          .alert-error
+            | #{error}
+
+        form(action="/login-admin" method="POST")
+
+          .form-group
+            label(for="email") Email Admin
+            .input-box
+              span.input-icon ✉️
+              input#email(
+                type="email"
+                name="email"
+                placeholder="Masukkan email admin"
+                required
+              )
+
+          .form-group
+            label(for="username") Username
+            .input-box
+              span.input-icon 👤
+              input#username(
+                type="text"
+                name="username"
+                placeholder="Masukkan username admin"
+                required
+              )
+
+          .form-group
+            label(for="password") Password
+            .input-box
+              span.input-icon 🔒
+              input#password(
+                type="password"
+                name="password"
+                placeholder="Masukkan password admin"
+                required
+              )
+
+          button.btn.btn-admin.btn-large(type="submit")
+            | Masuk sebagai Admin
+
+  style.
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Poppins',sans-serif;
+      background:#020617;
+    }
+
+    .auth-section{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+      background:
+        linear-gradient(rgba(2,6,23,.88), rgba(2,6,23,.88)),
+        url('https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+    }
+
+    .auth-container{
+      width:100%;
+      max-width:1200px;
+      display:grid;
+      grid-template-columns:1fr 470px;
+      gap:50px;
+      align-items:center;
+    }
+
+    .auth-info{
+      color:white;
+    }
+
+    .brand-badge{
+      display:inline-block;
+      padding:10px 18px;
+      border-radius:999px;
+      background:rgba(59,130,246,.12);
+      border:1px solid rgba(59,130,246,.25);
+      margin-bottom:25px;
+      backdrop-filter:blur(10px);
+    }
+
+    .auth-info h1{
+      font-size:4rem;
+      line-height:1.2;
+      margin-bottom:20px;
+    }
+
+    .auth-info h1 span{
+      color:#3b82f6;
+    }
+
+    .auth-info p{
+      color:rgba(255,255,255,.78);
+      line-height:1.9;
+      max-width:550px;
+    }
+
+    .auth-features{
+      margin-top:40px;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+
+    .feature-item{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      padding:18px 20px;
+      border-radius:18px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(10px);
+      max-width:420px;
+    }
+
+    .feature-item .icon{
+      font-size:1.5rem;
+    }
+
+    .glass-card{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(20px);
+      border-radius:28px;
+      padding:40px;
+      box-shadow:0 20px 50px rgba(0,0,0,.35);
+    }
+
+    .form-container h2{
+      color:white;
+      text-align:center;
+      margin-bottom:10px;
+      font-size:2rem;
+    }
+
+    .form-subtitle{
+      text-align:center;
+      color:rgba(255,255,255,.7);
+      margin-bottom:30px;
+      line-height:1.7;
+    }
+
+    .alert-error{
+      background:rgba(239,68,68,.15);
+      border:1px solid rgba(239,68,68,.35);
+      color:#fecaca;
+      padding:14px;
+      border-radius:14px;
+      margin-bottom:22px;
+      text-align:center;
+    }
+
+    .form-group{
+      margin-bottom:22px;
+    }
+
+    .form-group label{
+      display:block;
+      color:white;
+      margin-bottom:10px;
+      font-weight:500;
+    }
+
+    .input-box{
+      position:relative;
+    }
+
+    .input-icon{
+      position:absolute;
+      left:16px;
+      top:50%;
+      transform:translateY(-50%);
+    }
+
+    .input-box input{
+      width:100%;
+      padding:16px 16px 16px 48px;
+      border:none;
+      outline:none;
+      border-radius:16px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:white;
+      transition:.3s;
+    }
+
+    .input-box input::placeholder{
+      color:rgba(255,255,255,.4);
+    }
+
+    .input-box input:focus{
+      border-color:#3b82f6;
+      background:rgba(255,255,255,.1);
+    }
+
+    .btn{
+      width:100%;
+      border:none;
+      padding:16px;
+      border-radius:16px;
+      font-size:1rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:.3s;
+    }
+
+    .btn-admin{
+      background:#3b82f6;
+      color:white;
+      box-shadow:0 10px 25px rgba(59,130,246,.3);
+    }
+
+    .btn-admin:hover{
+      transform:translateY(-3px);
+      background:#2563eb;
+    }
+
+    @media(max-width:950px){
+
+      .auth-container{
+        grid-template-columns:1fr;
+      }
+
+      .auth-info{
+        text-align:center;
+      }
+
+      .auth-info p{
+        margin:auto;
+      }
+
+      .feature-item{
+        margin:auto;
+      }
+
+      .auth-info h1{
+        font-size:2.7rem;
+      }
+    }
+
+    @media(max-width:600px){
+
+      .auth-section{
+        padding:20px;
+      }
+
+      .glass-card{
+        padding:28px;
+      }
+
+      .auth-info h1{
+        font-size:2.2rem;
+      }
+    }
