@@ -71,7 +71,7 @@ router.post('/register', async (req, res) => {
     try {
         const { email, username, password } = req.body;
         const hash = await bcrypt.hash(password, 12);
-        await pool.query('INSERT INTO users (email, username, password, role, created_at, updated_at) VALUES (?,?,?,?,NOW(),NOW())', [email, username, hash, 'customer']);
+        await pool.query('INSERT INTO users (email, username, password, role, created_at) VALUES (?,?,?,?,NOW())', [email, username, hash, 'customer']);
         res.redirect('/login-customer');
     } catch (err) {
         console.error(err);

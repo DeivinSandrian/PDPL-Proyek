@@ -6,6 +6,8 @@ node_modules/
 .env
 .env.*
 !.env.example
+.env.backup
+.env.production
 
 # Logs
 *.log
@@ -19,9 +21,12 @@ pnpm-debug.log*
 /public/hot
 /public/storage/
 
-# Laravel/runtime leftovers
+# PHP / Laravel / runtime leftovers
 /bootstrap/cache/
 /storage/
+.phpactor.json
+.phpunit.result.cache
+/.phpunit.cache
 
 # Editor and OS files
 .DS_Store
