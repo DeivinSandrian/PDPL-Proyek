@@ -12,11 +12,30 @@ block content
       .countdown(style="font-size: 2.5em; font-weight: bold; color: var(--danger); margin: 20px 0;" id="timer") 10:00
       
       p Total yang harus dibayar:
-      h2(style="color: var(--primary);") Rp #{Number(booking.total_amount).toLocaleString('id-ID')}
+      h2(style="color: var(--primary); margin-bottom: 30px;") Rp #{Number(booking.total_amount).toLocaleString('id-ID')}
       
-      form(method="POST" action=`/customer/pay/${booking.booking_id}` style="margin-top:30px;")
-        button.btn.btn-success(type="submit" style="font-size: 1.2em; padding: 15px 40px;") (Simulasi) Bayar Sekarang
+      form.payment-form(method="POST" action=`/customer/pay/${booking.booking_id}` style="text-align: left; max-width: 500px; margin: 0 auto; background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px; border: 1px solid var(--border);")
+        h4(style="margin-bottom: 15px;") Pilih Metode Pembayaran
         
+        .form-group
+          select.form-control(name="payment_method" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text-main); font-family: inherit;")
+            option(value="") -- Pilih Metode --
+            option(value="BCA") Transfer BCA
+            option(value="MANDIRI") Transfer Mandiri
+            option(value="BNI") Transfer BNI
+            option(value="GOPAY") GoPay
+            option(value="OVO") OVO
+            option(value="QRIS") QRIS
+            
+        .form-group(style="margin-top: 15px;")
+          label(style="display: block; margin-bottom: 8px; font-size: 0.9em; color: var(--text-muted);") Nomor Rekening / No. HP (Simulasi)
+          input.form-control(type="text" name="account_number" placeholder="Contoh: 08123456789" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text-main); font-family: inherit;")
+
+        .form-group(style="margin-top: 15px; margin-bottom: 25px;")
+          label(style="display: block; margin-bottom: 8px; font-size: 0.9em; color: var(--text-muted);") PIN / Password (Simulasi)
+          input.form-control(type="password" name="pin" placeholder="Masukkan 6 digit PIN" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text-main); font-family: inherit;")
+
+        button.btn.btn-primary(type="submit" style="width: 100%; font-size: 1.1em; padding: 15px;") Konfirmasi Pembayaran
       script.
         const holdExpiredAt = new Date("#{booking.hold_expired_at}").getTime();
         const timerEl = document.getElementById('timer');

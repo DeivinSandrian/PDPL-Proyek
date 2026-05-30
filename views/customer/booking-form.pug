@@ -30,7 +30,7 @@ block content
       if schedule.pickup_point || schedule.dropoff_point
         .form-group
           label Informasi Titik Kumpul
-          p(style="background:#f4f4f4; padding:10px; border-radius:5px;")
+          p(style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);")
             | Titik Jemput: <strong>#{schedule.pickup_point || '-'}</strong> <br>
             | Titik Turun: <strong>#{schedule.dropoff_point || '-'}</strong>
     

@@ -1,6 +1,14 @@
 extends ../layout-customer
 
 block content
+  style.
+    .table-wrapper table { border-collapse: separate; border-spacing: 0 15px; width: 100%; }
+    .table-wrapper th, .table-wrapper td { padding: 18px 20px; vertical-align: middle; }
+    .table-wrapper tbody tr { background: rgba(255, 255, 255, 0.03); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .table-wrapper tbody tr td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+    .table-wrapper tbody tr td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+    .badge { white-space: nowrap; padding: 8px 14px; border-radius: 20px; font-size: 0.85em; font-weight: 500; }
+
   .page-header
     h2 Pesanan Saya
     p Kelola riwayat pemesanan tiket travel Anda
@@ -20,6 +28,8 @@ block content
               th Aksi
           tbody
             each b in bookings
+              - const isPast = new Date() > new Date(b.departure_time);
+              - const isUsedOrCancelled = b.status === 'cancelled' || b.status === 'expired' || (b.status === 'confirmed' && isPast);
               tr
                 td <strong>#{b.booking_code}</strong>
                 td #{b.origin_city} &rarr; #{b.destination_city}
@@ -36,14 +46,17 @@ block content
                     span.badge.badge-canceled Dibatalkan
                 td Rp #{Number(b.total_amount).toLocaleString('id-ID')}
                 td
-                  .actions
+                  .actions(style="display: flex; gap: 10px; align-items: center;")
                     if b.status === 'pending'
                       a.btn.btn-success.btn-sm(href=`/customer/payment/${b.booking_id}`) Bayar
                       form(method="POST" action=`/customer/booking/${b.booking_id}/cancel` style="display:inline;")
-                        button.btn.btn-danger.btn-sm(type="submit") Batalkan
-                    if b.status === 'confirmed'
+                        button.btn.btn-danger.btn-sm(type="submit" style="padding: 8px 15px;") Batalkan
+                    if b.status === 'confirmed' && !isPast
                       form(method="POST" action=`/customer/booking/${b.booking_id}/cancel` style="display:inline;")
-                        button.btn.btn-warning.btn-sm(type="submit" onclick="return confirm('Anda yakin ingin membatalkan pesanan (Refund)?')") Batalkan
+                        button.btn.btn-warning.btn-sm(type="submit" onclick="return confirm('Anda yakin ingin membatalkan pesanan (Refund)?')" style="padding: 8px 15px;") Batalkan
+                    if isUsedOrCancelled
+                      form(method="POST" action=`/customer/booking/${b.booking_id}/delete` style="display:inline;")
+                        button.btn.btn-danger.btn-sm(type="submit" onclick="return confirm('Hapus tiket ini dari riwayat?')" style="background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 15px;") Hapus
     else
       .empty-state
         h3 Belum ada pesanan

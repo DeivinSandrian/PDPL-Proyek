@@ -10,21 +10,44 @@ block content
     form(method="GET" action="/customer/search" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;")
       .form-group(style="flex: 1; min-width: 200px;")
         label Kota Asal
-        select(name="origin" required)
-          option(value="") -- Pilih Kota Asal --
+        select(name="origin")
+          option(value="") -- Semua Kota Asal --
           if origins && origins.length
             each o in origins
               option(value=o.origin_city) #{o.origin_city}
       .form-group(style="flex: 1; min-width: 200px;")
         label Kota Tujuan
-        select(name="destination" required)
-          option(value="") -- Pilih Tujuan --
+        select(name="destination")
+          option(value="") -- Semua Tujuan --
           if destinations && destinations.length
             each d in destinations
               option(value=d.destination_city) #{d.destination_city}
       .form-group(style="flex: 1; min-width: 200px;")
         label Tanggal Keberangkatan
-        input(type="date" name="date" required)
+        input(type="date" name="date")
       
       div(style="flex-basis: 100%; text-align: right;")
         button.btn.btn-primary(type="submit" style="width: 100%;") Cari Tiket
+
+  .section-header(style="max-width: 800px; margin: 40px auto 20px auto;")
+    h2 Jadwal Tersedia
+    p Berikut adalah jadwal perjalanan yang bisa Anda pesan.
+
+  if schedules && schedules.length
+    .schedule-list(style="display: flex; flex-direction: column; gap: 20px; max-width: 800px; margin: 0 auto 40px auto;")
+      each s in schedules
+        .card(style="display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-wrap: wrap; gap: 15px;")
+          div
+            h3(style="margin-bottom: 5px;") #{s.origin_city} &rarr; #{s.destination_city}
+            p(style="margin-bottom: 5px;") 📅 #{new Date(s.departure_time).toLocaleDateString('id-ID', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})}
+            p(style="margin-bottom: 5px;") ⏰ #{new Date(s.departure_time).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})} - #{s.arrival_estimate ? new Date(s.arrival_estimate).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) : '?'}
+            p(style="color: #666; margin-bottom: 5px;") 🚘 #{s.plate_number} (#{s.vehicle_type})
+            if s.pickup_point
+              p(style="font-size: 0.9em; color: #888;") Jemput: #{s.pickup_point} | Turun: #{s.dropoff_point || '-'}
+          div(style="text-align: right;")
+            h3(style="color: var(--primary); margin-bottom: 10px;") Rp #{Number(s.price).toLocaleString('id-ID')}
+            a.btn.btn-primary(href=`/customer/booking/${s.schedule_id}`) Pilih Kursi
+  else
+    .empty-state(style="max-width: 800px; margin: 0 auto 40px auto; text-align: center; padding: 40px; background: white; border-radius: 15px;")
+      h3 Belum Ada Jadwal
+      p Jadwal perjalanan belum tersedia saat ini.

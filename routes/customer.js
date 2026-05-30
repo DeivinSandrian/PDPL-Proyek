@@ -30,7 +30,18 @@ router.get('/dashboard', async (req, res) => {
     // Get unique origin and destination cities for the dropdowns
     const [origins] = await pool.query('SELECT DISTINCT origin_city FROM routes');
     const [destinations] = await pool.query('SELECT DISTINCT destination_city FROM routes');
-    res.render('customer/dashboard-customer', { title: 'Dashboard Customer', user: req.session.user, origins, destinations });
+    
+    // Fetch all available schedules
+    const [schedules] = await pool.query(`
+        SELECT s.*, v.plate_number, v.vehicle_type, v.capacity, r.origin_city, r.destination_city 
+        FROM schedules s
+        JOIN routes r ON s.route_id = r.route_id
+        JOIN vehicles v ON s.vehicle_id = v.vehicle_id
+        WHERE s.status = 'available'
+        ORDER BY s.departure_time ASC
+    `);
+
+    res.render('customer/dashboard-customer', { title: 'Dashboard Customer', user: req.session.user, origins, destinations, schedules });
 });
 
 // Search Results
@@ -41,7 +52,7 @@ router.get('/search', async (req, res) => {
         FROM schedules s
         JOIN routes r ON s.route_id = r.route_id
         JOIN vehicles v ON s.vehicle_id = v.vehicle_id
-        WHERE s.status = 'available' AND s.departure_time > NOW()
+        WHERE s.status = 'available'
     `;
     const params = [];
 
@@ -80,13 +91,14 @@ router.get('/booking/:scheduleId', async (req, res) => {
 
     // Find booked seats (status confirmed or pending within hold timer)
     const [bookedSeatsData] = await pool.query(`
-        SELECT bs.seat_id 
+        SELECT st.seat_number 
         FROM booking_seats bs
         JOIN bookings b ON bs.booking_id = b.booking_id
+        JOIN seats st ON bs.seat_id = st.seat_id
         WHERE b.schedule_id = ? AND (b.status = 'confirmed' OR (b.status = 'pending' AND b.hold_expired_at > NOW()))
     `, [scheduleId]);
 
-    const bookedSeats = bookedSeatsData.map(b => b.seat_id.toString());
+    const bookedSeats = bookedSeatsData.map(b => b.seat_number.toString());
 
     res.render('customer/booking-form', { title: 'Form Pemesanan', user: req.session.user, schedule, bookedSeats });
 });
@@ -99,10 +111,11 @@ router.post('/booking/:scheduleId', async (req, res) => {
 
     // Validate seat again to prevent double booking
     const [bookedSeatsData] = await pool.query(`
-        SELECT bs.seat_id 
+        SELECT st.seat_number 
         FROM booking_seats bs
         JOIN bookings b ON bs.booking_id = b.booking_id
-        WHERE b.schedule_id = ? AND bs.seat_id = ? AND (b.status = 'confirmed' OR (b.status = 'pending' AND b.hold_expired_at > NOW()))
+        JOIN seats st ON bs.seat_id = st.seat_id
+        WHERE b.schedule_id = ? AND st.seat_number = ? AND (b.status = 'confirmed' OR (b.status = 'pending' AND b.hold_expired_at > NOW()))
     `, [scheduleId, seat_number]);
 
     if (bookedSeatsData.length > 0) {
@@ -120,8 +133,21 @@ router.post('/booking/:scheduleId', async (req, res) => {
 
     const bookingId = result.insertId;
     
-    // Insert seat
-    await pool.query('INSERT INTO booking_seats (booking_id, seat_id) VALUES (?, ?)', [bookingId, seat_number]);
+    // Get vehicle_id
+    const [[vehicleData]] = await pool.query('SELECT vehicle_id FROM schedules WHERE schedule_id=?', [scheduleId]);
+    
+    // Find or create seat
+    let seat_id = null;
+    const [seats] = await pool.query('SELECT seat_id FROM seats WHERE vehicle_id=? AND seat_number=?', [vehicleData.vehicle_id, seat_number]);
+    if (seats.length > 0) {
+        seat_id = seats[0].seat_id;
+    } else {
+        const [sRes] = await pool.query('INSERT INTO seats (vehicle_id, seat_number) VALUES (?, ?)', [vehicleData.vehicle_id, seat_number]);
+        seat_id = sRes.insertId;
+    }
+
+    // Insert seat mapping
+    await pool.query('INSERT INTO booking_seats (booking_id, seat_id) VALUES (?, ?)', [bookingId, seat_id]);
 
     res.redirect(`/customer/payment/${bookingId}`);
 });
@@ -176,6 +202,13 @@ router.get('/my-bookings', async (req, res) => {
 router.post('/booking/:bookingId/cancel', async (req, res) => {
     await pool.query('UPDATE bookings SET status="cancelled" WHERE booking_id=? AND user_id=?', [req.params.bookingId, req.session.user.id]);
     await pool.query('DELETE FROM booking_seats WHERE booking_id=?', [req.params.bookingId]);
+    res.redirect('/customer/my-bookings');
+});
+
+// Delete Booking History
+router.post('/booking/:bookingId/delete', async (req, res) => {
+    await pool.query('DELETE FROM booking_seats WHERE booking_id=?', [req.params.bookingId]);
+    await pool.query('DELETE FROM bookings WHERE booking_id=? AND user_id=?', [req.params.bookingId, req.session.user.id]);
     res.redirect('/customer/my-bookings');
 });
 
