@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const { loadEnv } = require('./utils/env');
+loadEnv();
 const app = express();
 
 const port = process.env.PORT || 3000;
@@ -15,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session middleware
 app.use(session({
-    secret: 'travelgo-secret-key',
+    secret: process.env.SESSION_SECRET || 'travelgo-secret-key',
     resave: false,
     saveUninitialized: false
 }));
