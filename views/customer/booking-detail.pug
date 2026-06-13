@@ -119,4 +119,12 @@ block content
         button.btn.btn-danger(type="submit" onclick="return confirm('Batalkan pesanan ini?')") Batalkan Pesanan
     if booking.status === 'confirmed'
       a.btn.btn-primary(href=`/customer/eticket/${booking.booking_id}`) Lihat E-Ticket
+      if cancelRequest && cancelRequest.status === 'pending'
+        span.badge.badge-pending(style="margin-left: 10px;") Permintaan Pembatalan Diajukan
+        p(style="font-size: 0.85em; color: var(--text-muted); margin-top: 5px;") Permintaan sudah diajukan pada #{new Date(cancelRequest.requested_at).toLocaleString('id-ID')}
+      else
+        form(method="POST" action=`/customer/booking/${booking.booking_id}/cancel-request` style="display:inline;")
+          input(type="hidden" name="reason" value="Customer requested cancellation")
+          button.btn.btn-warning(type="submit" onclick="return confirm('Ajukan permintaan pembatalan? Admin akan meninjau permintaan ini.')") Ajukan Pembatalan
+      a.btn.btn-secondary(href=`/customer/booking/${booking.booking_id}/reschedule`) Reschedule Jadwal
     a.btn.btn-secondary(href="/customer/my-bookings") Kembali ke Pesanan Saya
