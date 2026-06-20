@@ -13,6 +13,7 @@ TravelGo is a Node.js / Express booking app for bus or shuttle travel. It uses M
 - Socket.IO for realtime admin/customer updates
 - bcrypt for password hashing
 - qrcode for QR generation
+- Built-in assert module for automated tests
 
 ## Prerequisites
 
@@ -356,4 +357,5 @@ npm run migrate     # apply pending database migrations
 npm run migrate:status
 npm start           # start app at http://localhost:3000
 npm run dev         # start with nodemon
+npm test            # run automated tests
 ```

@@ -134,6 +134,21 @@ Open your browser and navigate to **[http://localhost:3000](http://localhost:300
 
 ---
 
+## Running Tests
+
+To run the automated unit and integration tests:
+
+```bash
+npm test
+```
+
+This will verify:
+* **Booking Code Generation**: Uniqueness and format matching `BK[A-Z0-9]{8}`.
+* **IDR Formatting**: Correct Rupiah currency layout formatting.
+* **Database Seat Availability**: Database queries executing successfully.
+
+---
+
 ## Database Migration & Schema Change Workflow
 
 To ensure clean teamwork and smooth integration of changes, follow these strict database guidelines.
