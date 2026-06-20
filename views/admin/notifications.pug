@@ -25,3 +25,35 @@ block content
       .empty-state
         h3 Belum ada notifikasi
         p Notifikasi yang dikirim akan muncul di sini
+
+  script(src="/socket.io/socket.io.js")
+  script.
+    const socket = io();
+    socket.on('adminNotification', function(data) {
+      const container = document.querySelector('.card:last-of-type');
+      if (container) {
+        const emptyState = container.querySelector('.empty-state');
+        if (emptyState) emptyState.remove();
+
+        const item = document.createElement('div');
+        item.className = 'notif-item';
+
+        const msg = document.createElement('div');
+        msg.className = 'notif-message';
+        msg.textContent = data.message;
+        
+        const time = document.createElement('div');
+        time.className = 'notif-time';
+        time.textContent = new Date().toLocaleString('id-ID');
+
+        item.appendChild(msg);
+        item.appendChild(time);
+        
+        const h3 = container.querySelector('h3');
+        if (h3) {
+          h3.insertAdjacentElement('afterend', item);
+        } else {
+          container.appendChild(item);
+        }
+      }
+    });

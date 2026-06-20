@@ -12,15 +12,74 @@ block content
       .form-grid
         .form-group
           label Pilih Jadwal
-          select(name="schedule_id" required)
+          select(name="schedule_id" id="schedule_select" required)
             option(value="") -- Pilih Jadwal --
             if schedules && schedules.length
               each s in schedules
                 option(value=s.schedule_id) #{s.origin} &rarr; #{s.destination} | #{new Date(s.departure_time).toLocaleString('id-ID')} | Rp #{Number(s.price).toLocaleString('id-ID')}
         .form-group
-          label Nama Penumpang
-          input(type="text" name="passenger_name" placeholder="Nama Lengkap Penumpang" required)
-        .form-group
-          label Nomor Kursi
-          input(type="text" name="seat_number" placeholder="Contoh: A1" required)
-      button.btn.btn-primary(type="submit") Simpan Pesanan Offline
+          label Nomor Kursi (Pisahkan dengan koma untuk beberapa kursi)
+          input(type="text" name="seat_numbers" id="seat_numbers" placeholder="Contoh: 1, 2" required)
+
+      #passenger-forms-container(style="margin-top: 20px;")
+
+      button.btn.btn-primary(type="submit" style="margin-top: 20px;") Simpan Pesanan Offline
+
+  script.
+    const seatInput = document.getElementById('seat_numbers');
+    const container = document.getElementById('passenger-forms-container');
+
+    function updatePassengerForms() {
+      const seats = seatInput.value.split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+      
+      const currentValues = {};
+      container.querySelectorAll('.passenger-input-group').forEach(group => {
+        const seat = group.dataset.seat;
+        currentValues[seat] = {
+          name: group.querySelector('.passenger-name-input').value,
+          identity: group.querySelector('.passenger-identity-input').value,
+          phone: group.querySelector('.passenger-phone-input').value
+        };
+      });
+
+      container.innerHTML = '';
+      
+      if (seats.length === 0) {
+        container.innerHTML = '<p class="text-muted">Masukkan nomor kursi untuk mengisi data penumpang.</p>';
+        return;
+      }
+
+      seats.forEach(seat => {
+        const oldVal = currentValues[seat] || { name: '', identity: '', phone: '' };
+        const card = document.createElement('div');
+        card.className = 'passenger-input-group';
+        card.style.margin = '15px 0';
+        card.style.padding = '20px';
+        card.style.border = '1px solid var(--border)';
+        card.style.borderRadius = '10px';
+        card.style.background = 'rgba(255, 255, 255, 0.02)';
+        card.dataset.seat = seat;
+
+        card.innerHTML = `
+          <h4 style="margin-top: 0; color: var(--primary); margin-bottom: 15px;">Data Penumpang - Kursi ${seat}</h4>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 8px;">Nama Lengkap</label>
+            <input type="text" class="passenger-name-input" name="passenger_name_${seat}" value="${oldVal.name}" required style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border); background:rgba(0,0,0,0.2); color:#fff;">
+          </div>
+          <div class="form-group" style="margin-bottom: 15px;">
+            <label style="display: block; margin-bottom: 8px;">Nomor Identitas</label>
+            <input type="text" class="passenger-identity-input" name="passenger_identity_${seat}" value="${oldVal.identity}" required style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border); background:rgba(0,0,0,0.2); color:#fff;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="display: block; margin-bottom: 8px;">Nomor Telepon</label>
+            <input type="text" class="passenger-phone-input" name="passenger_phone_${seat}" value="${oldVal.phone}" required style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border); background:rgba(0,0,0,0.2); color:#fff;">
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    seatInput.addEventListener('input', updatePassengerForms);
+    updatePassengerForms();

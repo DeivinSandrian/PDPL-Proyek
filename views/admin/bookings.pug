@@ -59,3 +59,36 @@ block content
       .empty-state
         h3 Belum ada pemesanan
         p Pemesanan akan muncul di sini ketika pelanggan melakukan booking
+
+  script(src="/socket.io/socket.io.js")
+  script.
+    const socket = io();
+    
+    socket.on('bookingUpdate', function(data) {
+      // Reload on booking status update to show current state
+      window.location.reload();
+    });
+
+    socket.on('adminNotification', function(data) {
+      if (data.type === 'booking_created') {
+        // Show a temporary banner or notification
+        const banner = document.createElement('div');
+        banner.style.position = 'fixed';
+        banner.style.top = '20px';
+        banner.style.right = '20px';
+        banner.style.background = 'var(--primary-gradient)';
+        banner.style.color = '#fff';
+        banner.style.padding = '15px 25px';
+        banner.style.borderRadius = '10px';
+        banner.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+        banner.style.zIndex = '9999';
+        banner.style.fontSize = '0.95em';
+        banner.style.fontFamily = "'Outfit', sans-serif";
+        banner.innerHTML = `
+          <strong>Pemesanan Baru!</strong><br>
+          ${data.message}<br>
+          <button class="btn btn-sm btn-secondary" onclick="window.location.reload()" style="margin-top: 10px; padding: 5px 10px; font-size: 0.85em;">Segarkan Halaman</button>
+        `;
+        document.body.appendChild(banner);
+      }
+    });

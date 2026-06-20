@@ -7,6 +7,7 @@ const seatAvailability = require("../services/seatAvailability");
 const ticketService = require("../services/ticketService");
 const requestService = require("../services/requestService");
 const Validation = require("../utils/validation");
+const NotificationService = require("../services/notificationService");
 
 /* Dashboard */
 router.get("/dashboard", authAdmin, async (req, res) => {
@@ -208,18 +209,37 @@ router.get("/bookings/new", authAdmin, async (req, res) => {
 
 router.post("/bookings/new", authAdmin, async (req, res) => {
     try {
-        const { schedule_id, passenger_name, seat_number } = req.body;
+        const { schedule_id, seat_numbers } = req.body;
         const user_id = req.session.user ? req.session.user.id : null;
 
-        // Validate required fields
-        const reqErr = Validation.validateRequired(
-            ["schedule_id", "passenger_name", "seat_number"],
-            req.body,
-        );
-        if (reqErr) {
+        if (!schedule_id || !seat_numbers) {
             return res.send(
-                `<script>alert('${reqErr}'); window.history.back();</script>`,
+                `<script>alert('Jadwal dan nomor kursi wajib diisi!'); window.history.back();</script>`,
             );
+        }
+
+        const seatsSelected = seat_numbers.split(',')
+            .map(s => s.trim())
+            .filter(s => s.length > 0);
+
+        if (seatsSelected.length === 0) {
+            return res.send(
+                `<script>alert('Masukkan minimal satu nomor kursi!'); window.history.back();</script>`,
+            );
+        }
+
+        // Validate passenger details for each seat
+        const passengersData = [];
+        for (const s of seatsSelected) {
+            const name = req.body[`passenger_name_${s}`];
+            const identity = req.body[`passenger_identity_${s}`];
+            const phone = req.body[`passenger_phone_${s}`];
+            if (!name || !identity || !phone) {
+                return res.send(
+                    `<script>alert('Lengkapi semua data penumpang untuk kursi ${s}!'); window.history.back();</script>`,
+                );
+            }
+            passengersData.push({ seat_number: s, name, identity, phone });
         }
 
         // Get price and vehicle_id
@@ -234,64 +254,94 @@ router.post("/bookings/new", authAdmin, async (req, res) => {
         }
         const schedule = schedules[0];
 
-        // Find or create seat
-        let seat_id = null;
-        const [seats] = await pool.query(
-            "SELECT seat_id FROM seats WHERE vehicle_id=? AND seat_number=?",
-            [schedule.vehicle_id, seat_number],
-        );
-        if (seats.length > 0) {
-            seat_id = seats[0].seat_id;
-        } else {
-            const [sRes] = await pool.query(
-                "INSERT INTO seats (vehicle_id, seat_number) VALUES (?, ?)",
-                [schedule.vehicle_id, seat_number],
+        // Find or create seat IDs
+        for (const p of passengersData) {
+            let seat_id = null;
+            const [seats] = await pool.query(
+                "SELECT seat_id FROM seats WHERE vehicle_id=? AND seat_number=?",
+                [schedule.vehicle_id, p.seat_number],
             );
-            seat_id = sRes.insertId;
+            if (seats.length > 0) {
+                seat_id = seats[0].seat_id;
+            } else {
+                const [sRes] = await pool.query(
+                    "INSERT INTO seats (vehicle_id, seat_number) VALUES (?, ?)",
+                    [schedule.vehicle_id, p.seat_number],
+                );
+                seat_id = sRes.insertId;
+            }
+            p.seat_id = seat_id;
         }
 
         // Generate unique booking code
         const booking_code = await bookingCodeService.generateCode();
+        const totalAmount = Number(schedule.price) * passengersData.length;
+        const legacyPassengerName = passengersData[0].name;
 
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
 
-            await seatAvailability.assertSeatAvailable(
-                conn,
-                schedule_id,
-                seat_id,
-            );
+            // Check availability for all seats
+            for (const p of passengersData) {
+                await seatAvailability.assertSeatAvailable(
+                    conn,
+                    schedule_id,
+                    p.seat_id,
+                );
+            }
 
+            // Create booking
             const [result] = await conn.query(
                 "INSERT INTO bookings (user_id, schedule_id, booking_code, booking_channel, total_amount, passenger_name, status, created_at) VALUES (?, ?, ?, 'offline', ?, ?, 'confirmed', NOW())",
                 [
                     user_id,
                     schedule_id,
                     booking_code,
-                    schedule.price,
-                    passenger_name,
+                    totalAmount,
+                    legacyPassengerName,
                 ],
             );
+            const bookingId = result.insertId;
 
-            await conn.query(
-                "INSERT INTO booking_seats (booking_id, seat_id, price_at_booking) VALUES (?, ?, ?)",
-                [result.insertId, seat_id, schedule.price],
-            );
+            // Insert booking_seats and passengers
+            for (const p of passengersData) {
+                await conn.query(
+                    "INSERT INTO booking_seats (booking_id, seat_id, price_at_booking) VALUES (?, ?, ?)",
+                    [bookingId, p.seat_id, schedule.price],
+                );
 
+                await conn.query(
+                    "INSERT INTO passengers (booking_id, full_name, identity_number, phone) VALUES (?, ?, ?, ?)",
+                    [bookingId, p.name, p.identity, p.phone],
+                );
+            }
+
+            // Issue ticket
             await ticketService.issueTicket(
                 conn,
-                result.insertId,
+                bookingId,
                 booking_code,
             );
 
             await conn.commit();
+
+            // Wire notification using the NotificationService
+            const io = req.app.get("io");
+            await NotificationService.createNotification({
+                type: "booking_created",
+                bookingId,
+                message: `Pemesanan offline baru dibuat oleh admin dengan kode ${booking_code}`,
+                payload: { bookingCode: booking_code, totalAmount },
+                io
+            });
+
             res.redirect("/admin/bookings");
         } catch (err) {
             await conn.rollback();
             if (err.message === "SEAT_TAKEN") {
                 return res.send(
-                    "<script>alert('Gagal membuat pesanan: Kursi ini sudah dipesan atau sedang ditahan!'); window.history.back();</script>",
+                    "<script>alert('Gagal membuat pesanan: Salah satu kursi sudah dipesan atau sedang ditahan!'); window.history.back();</script>",
                 );
             }
             console.error("Offline booking transaction error:", err);
@@ -304,7 +354,7 @@ router.post("/bookings/new", authAdmin, async (req, res) => {
     } catch (e) {
         console.error("Offline booking error:", e);
         res.send(
-            "<script>alert('Gagal membuat pesanan: Terjadi kesalahan internal.'); window.history.back();</script>",
+            "<script>alert('Gagal membuat pesanan: Terjadi kesalahan server.'); window.history.back();</script>",
         );
     }
 });
@@ -494,11 +544,17 @@ router.get("/eticket/:bookingId", authAdmin, async (req, res) => {
         );
     }
 
+    const [passengers] = await pool.query(
+        "SELECT * FROM passengers WHERE booking_id = ?",
+        [req.params.bookingId]
+    );
+
     res.render("admin/eticket", {
         title: "E-Ticket",
         ticket,
         booking,
         user: req.session.user,
+        passengers,
     });
 });
 
@@ -532,6 +588,7 @@ router.post(
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
+            const request = await requestService.getCancellationRequestById(conn, req.params.id);
             const success = await requestService.approveCancellationRequest(
                 conn,
                 req.params.id,
@@ -542,6 +599,18 @@ router.post(
             if (success) {
                 const io = req.app.get("io");
                 if (io) io.emit("cancellationApproved", { id: req.params.id });
+                
+                if (request) {
+                    await NotificationService.createNotification({
+                        type: "cancelled",
+                        userId: request.user_id,
+                        bookingId: request.booking_id,
+                        message: `Permintaan pembatalan untuk booking ${request.booking_code} disetujui oleh admin.`,
+                        payload: { bookingCode: request.booking_code, status: "approved" },
+                        io
+                    });
+                }
+
                 res.redirect("/admin/cancellation-requests");
             } else {
                 res.send(
@@ -567,6 +636,7 @@ router.post(
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
+            const request = await requestService.getCancellationRequestById(conn, req.params.id);
             const success = await requestService.rejectCancellationRequest(
                 conn,
                 req.params.id,
@@ -574,6 +644,19 @@ router.post(
                 req.body.admin_notes || null,
             );
             await conn.commit();
+
+            if (success && request) {
+                const io = req.app.get("io");
+                await NotificationService.createNotification({
+                    type: "cancelled",
+                    userId: request.user_id,
+                    bookingId: request.booking_id,
+                    message: `Permintaan pembatalan untuk booking ${request.booking_code} ditolak oleh admin.`,
+                    payload: { bookingCode: request.booking_code, status: "rejected" },
+                    io
+                });
+            }
+
             res.redirect("/admin/cancellation-requests");
         } catch (e) {
             await conn.rollback();
@@ -614,6 +697,7 @@ router.post("/reschedule-requests/:id/approve", authAdmin, async (req, res) => {
     const conn = await pool.getConnection();
     try {
         await conn.beginTransaction();
+        const request = await requestService.getRescheduleRequestById(conn, req.params.id);
         const result = await requestService.approveRescheduleRequest(
             conn,
             req.params.id,
@@ -626,6 +710,19 @@ router.post("/reschedule-requests/:id/approve", authAdmin, async (req, res) => {
                 `<script>alert('${result.error}'); window.location.href='/admin/reschedule-requests/${req.params.id}';</script>`,
             );
         }
+
+        if (request) {
+            const io = req.app.get("io");
+            await NotificationService.createNotification({
+                type: "rescheduled",
+                userId: request.user_id,
+                bookingId: request.booking_id,
+                message: `Permintaan reschedule Anda untuk booking ${request.booking_code} disetujui. Kursi Anda berubah ke ${request.target_seat_number}.`,
+                payload: { bookingCode: request.booking_code, status: "approved" },
+                io
+            });
+        }
+
         res.redirect("/admin/reschedule-requests");
     } catch (e) {
         await conn.rollback();
@@ -642,6 +739,7 @@ router.post("/reschedule-requests/:id/reject", authAdmin, async (req, res) => {
     const conn = await pool.getConnection();
     try {
         await conn.beginTransaction();
+        const request = await requestService.getRescheduleRequestById(conn, req.params.id);
         await requestService.rejectRescheduleRequest(
             conn,
             req.params.id,
@@ -649,6 +747,19 @@ router.post("/reschedule-requests/:id/reject", authAdmin, async (req, res) => {
             req.body.admin_notes || null,
         );
         await conn.commit();
+
+        if (request) {
+            const io = req.app.get("io");
+            await NotificationService.createNotification({
+                type: "rescheduled",
+                userId: request.user_id,
+                bookingId: request.booking_id,
+                message: `Permintaan reschedule Anda untuk booking ${request.booking_code} ditolak oleh admin.`,
+                payload: { bookingCode: request.booking_code, status: "rejected" },
+                io
+            });
+        }
+
         res.redirect("/admin/reschedule-requests");
     } catch (e) {
         await conn.rollback();

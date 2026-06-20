@@ -22,9 +22,15 @@ block content
       p
         span.label Kursi
         span #{booking.seat_number}
-      p
-        span.label Penumpang
-        span #{booking.passenger_name}
+      if passengers && passengers.length
+        each p, idx in passengers
+          p
+            span.label Penumpang #{idx + 1}
+            span #{p.full_name} (#{p.identity_number}) - Telp: #{p.phone}
+      else
+        p
+          span.label Penumpang
+          span #{booking.passenger_name}
       if booking.email
         p
           span.label Email Pemesan
