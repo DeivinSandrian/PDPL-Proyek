@@ -1,68 +1,50 @@
 extends layout
 
 block content
-  section.auth-section.admin-theme
+  section.auth-section
     .auth-background
     .auth-container
 
       // LEFT SIDE
       .auth-info
-        .brand-badge 🔐 Admin Dashboard
-
+        .brand-badge ✨ TravelGo Premium
         h1
-          | Panel
+          | Selamat Datang
           br
-          span Administrator
-
+          span Kembali!
         p
-          | Kelola sistem TravelGo dengan mudah mulai dari data pelanggan,
-          | jadwal perjalanan, armada, hingga laporan pemesanan.
-
+          | Masuk untuk memesan tiket perjalanan dengan cepat,
+          | memilih kursi favorit, dan menikmati pengalaman travel premium.
         .auth-features
           .feature-item
-            span.icon 📊
-            p Monitoring data secara real-time
-
-          .feature-item
             span.icon 🚌
-            p Kelola armada & jadwal perjalanan
-
+            p Armada nyaman & modern
           .feature-item
-            span.icon 🛡️
-            p Sistem keamanan administrator
+            span.icon ⏰
+            p Jadwal keberangkatan tepat waktu
+          .feature-item
+            span.icon 🔒
+            p Pembayaran aman & terpercaya
 
       // RIGHT SIDE
       .glass-card.form-container
-        h2 Login Admin
-
+        h2 Masuk Ke TravelGo
         p.form-subtitle
-          | Masuk sebagai administrator untuk mengakses dashboard.
+          | Masuk dengan akun pelanggan atau administrator.
 
         if error
           .alert-error
             | #{error}
 
-        form(action="/login-admin" method="POST")
-
+        form(action="/login" method="POST")
           .form-group
-            label(for="email") Email Admin
+            label(for="email") Email
             .input-box
               span.input-icon ✉️
               input#email(
                 type="email"
                 name="email"
-                placeholder="Masukkan email admin"
-                required
-              )
-
-          .form-group
-            label(for="username") Username
-            .input-box
-              span.input-icon 👤
-              input#username(
-                type="text"
-                name="username"
-                placeholder="Masukkan username admin"
+                placeholder="Masukkan email Anda"
                 required
               )
 
@@ -73,14 +55,26 @@ block content
               input#password(
                 type="password"
                 name="password"
-                placeholder="Masukkan password admin"
+                placeholder="Masukkan password"
                 required
               )
 
-          button.btn.btn-admin.btn-large(type="submit")
-            | Masuk sebagai Admin
+          button.btn.btn-primary.btn-large(type="submit")
+            | Masuk Sekarang
+
+        .bottom-text
+          p
+            | Belum punya akun?
+            a(href="/register") Daftar di sini
 
   style.
+    main {
+      padding: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      width: 100% !important;
+    }
+
     *{
       margin:0;
       padding:0;
@@ -89,18 +83,20 @@ block content
 
     body{
       font-family:'Poppins',sans-serif;
-      background:#020617;
+      background:#0f172a;
     }
 
     .auth-section{
       min-height:100vh;
+      position:relative;
       display:flex;
       align-items:center;
       justify-content:center;
+      overflow:hidden;
       padding:40px;
       background:
-        linear-gradient(rgba(2,6,23,.88), rgba(2,6,23,.88)),
-        url('https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=1600&auto=format&fit=crop');
+        linear-gradient(rgba(15,23,42,.82), rgba(15,23,42,.82)),
+        url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop');
       background-size:cover;
       background-position:center;
     }
@@ -109,7 +105,7 @@ block content
       width:100%;
       max-width:1200px;
       display:grid;
-      grid-template-columns:1fr 470px;
+      grid-template-columns:1fr 480px;
       gap:50px;
       align-items:center;
     }
@@ -122,26 +118,29 @@ block content
       display:inline-block;
       padding:10px 18px;
       border-radius:999px;
-      background:rgba(59,130,246,.12);
-      border:1px solid rgba(59,130,246,.25);
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
       margin-bottom:25px;
       backdrop-filter:blur(10px);
+      font-size:.95rem;
     }
 
     .auth-info h1{
       font-size:4rem;
       line-height:1.2;
       margin-bottom:20px;
+      font-weight:700;
     }
 
     .auth-info h1 span{
-      color:#3b82f6;
+      color:#60a5fa;
     }
 
     .auth-info p{
-      color:rgba(255,255,255,.78);
+      color:rgba(255,255,255,.82);
       line-height:1.9;
       max-width:550px;
+      font-size:1.05rem;
     }
 
     .auth-features{
@@ -154,13 +153,13 @@ block content
     .feature-item{
       display:flex;
       align-items:center;
-      gap:15px;
+      gap:16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
       padding:18px 20px;
       border-radius:18px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      backdrop-filter:blur(10px);
-      max-width:420px;
+      backdrop-filter:blur(12px);
+      max-width:400px;
     }
 
     .feature-item .icon{
@@ -168,36 +167,37 @@ block content
     }
 
     .glass-card{
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.12);
       backdrop-filter:blur(20px);
       border-radius:28px;
       padding:40px;
-      box-shadow:0 20px 50px rgba(0,0,0,.35);
+      box-shadow:0 20px 50px rgba(0,0,0,.25);
     }
 
     .form-container h2{
       color:white;
-      text-align:center;
-      margin-bottom:10px;
       font-size:2rem;
+      margin-bottom:10px;
+      text-align:center;
     }
 
     .form-subtitle{
       text-align:center;
-      color:rgba(255,255,255,.7);
+      color:rgba(255,255,255,.72);
       margin-bottom:30px;
       line-height:1.7;
     }
 
     .alert-error{
       background:rgba(239,68,68,.15);
-      border:1px solid rgba(239,68,68,.35);
+      border:1px solid rgba(239,68,68,.4);
       color:#fecaca;
       padding:14px;
       border-radius:14px;
       margin-bottom:22px;
       text-align:center;
+      font-size:.95rem;
     }
 
     .form-group{
@@ -220,6 +220,7 @@ block content
       left:16px;
       top:50%;
       transform:translateY(-50%);
+      font-size:1rem;
     }
 
     .input-box input{
@@ -228,76 +229,82 @@ block content
       border:none;
       outline:none;
       border-radius:16px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.08);
       color:white;
+      font-size:1rem;
+      border:1px solid rgba(255,255,255,.08);
       transition:.3s;
     }
 
     .input-box input::placeholder{
-      color:rgba(255,255,255,.4);
+      color:rgba(255,255,255,.45);
     }
 
     .input-box input:focus{
-      border-color:#3b82f6;
-      background:rgba(255,255,255,.1);
+      border-color:#60a5fa;
+      background:rgba(255,255,255,.12);
     }
 
     .btn{
       width:100%;
       border:none;
+      cursor:pointer;
       padding:16px;
       border-radius:16px;
       font-size:1rem;
       font-weight:600;
-      cursor:pointer;
       transition:.3s;
     }
 
-    .btn-admin{
-      background:#3b82f6;
+    .btn-primary{
+      background:#2563eb;
       color:white;
-      box-shadow:0 10px 25px rgba(59,130,246,.3);
+      box-shadow:0 10px 25px rgba(37,99,235,.35);
     }
 
-    .btn-admin:hover{
+    .btn-primary:hover{
       transform:translateY(-3px);
-      background:#2563eb;
+      background:#1d4ed8;
+    }
+
+    .bottom-text{
+      text-align:center;
+      margin-top:28px;
+      color:rgba(255,255,255,.7);
+    }
+
+    .bottom-text a{
+      color:#60a5fa;
+      text-decoration:none;
+      font-weight:600;
+      margin-left:5px;
     }
 
     @media(max-width:950px){
-
       .auth-container{
         grid-template-columns:1fr;
       }
-
       .auth-info{
         text-align:center;
       }
-
       .auth-info p{
         margin:auto;
       }
-
       .feature-item{
         margin:auto;
       }
-
       .auth-info h1{
-        font-size:2.7rem;
+        font-size:2.8rem;
       }
     }
 
     @media(max-width:600px){
-
       .auth-section{
         padding:20px;
       }
-
       .glass-card{
         padding:28px;
       }
-
       .auth-info h1{
         font-size:2.2rem;
       }
