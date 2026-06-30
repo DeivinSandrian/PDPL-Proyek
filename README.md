@@ -84,10 +84,12 @@ npm run dev
 http://localhost:3000
 ```
 
-Before changing code, check the planning docs:
+Before changing code, check the planning and architectural docs:
 
 - `requirements.md` describes what the app must do.
 - `design.md` describes the target Express architecture.
+- `design_patterns_and_features.md` details the design patterns applied and all 24 core features.
+- `presentation_accounts.md` lists the 10 testing accounts and demo scenarios.
 - `roadmap.md` describes progress from the current state to 100%.
 - `tasks.md` lists the next implementation batches.
 
@@ -162,9 +164,11 @@ For development with auto-restart:
 npm run dev
 ```
 
-## Default Accounts
+## Default & Testing Accounts
 
-Admin:
+The database seeds contain **10 testing accounts** (3 Admins and 7 Customers) for presentation, development, and live testing.
+
+Admin Utama:
 
 ```text
 Email: admin@travelgo.com
@@ -172,13 +176,16 @@ Username: admin123
 Password: admin123
 ```
 
-Customer:
+Customer Utama:
 
 ```text
 Email: budi@example.com
 Username: budi
 Password: cust123
 ```
+
+> [!TIP]
+> For the complete list of all 10 credentials (including `admin2`, `ani`, `candra`, `dewi`, `eko`, etc.) and pre-seeded live testing scenarios (like active bookings, pending cancellations, and reschedule requests), see **[presentation_accounts.md](presentation_accounts.md)**.
 
 The login pages currently authenticate by email and password.
 
@@ -219,10 +226,11 @@ Use this workflow for every schema change:
 1. Find the latest migration number in `migrations/`.
 
 ```text
-001_initial_schema.sql
-002_seed_default_users.sql
-003_normalize_notifications_table.sql
-004_add_current_app_indexes.sql
+...
+007_expand_notifications.sql
+008_make_schedules_future.sql
+009_seed_presentation_data.sql
+010_expand_presentation_schedules.sql
 ```
 
 2. Create the next numbered SQL file with a clear name.
