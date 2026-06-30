@@ -56,6 +56,47 @@ block content
 
           button.btn.btn-primary.btn-large(type="submit") Masuk Sekarang
 
+        style.
+          .demo-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+          }
+          .demo-btn:hover {
+            background: rgba(255,255,255,0.08) !important;
+            border-color: var(--primary) !important;
+          }
+          details[open] summary {
+            margin-bottom: 10px;
+          }
+
+        .demo-accounts-section(style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;")
+          details
+            summary(style="cursor: pointer; color: var(--primary); font-size: 0.85em; font-weight: 600; outline: none; user-select: none;") 💡 Klik untuk Akun Uji Coba (Isi Otomatis)
+            .demo-grid(style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;")
+              .demo-btn(onclick="fillDemo('admin@travelgo.com', 'admin123')")
+                p(style="font-size: 0.75em; font-weight: 700; color: var(--text); margin: 0;") 🛡️ Admin Utama
+                p(style="font-size: 0.7em; color: var(--text-muted); margin: 0;") admin@travelgo.com / admin123
+              .demo-btn(onclick="fillDemo('budi@example.com', 'cust123')")
+                p(style="font-size: 0.75em; font-weight: 700; color: var(--text); margin: 0;") 👤 Customer (Budi)
+                p(style="font-size: 0.7em; color: var(--text-muted); margin: 0;") budi@example.com / cust123
+              .demo-btn(onclick="fillDemo('admin2@travelgo.com', 'admin123')")
+                p(style="font-size: 0.75em; font-weight: 700; color: var(--text); margin: 0;") 🛡️ Admin 2 (CS)
+                p(style="font-size: 0.7em; color: var(--text-muted); margin: 0;") admin2@travelgo.com / admin123
+              .demo-btn(onclick="fillDemo('ani@example.com', 'cust123')")
+                p(style="font-size: 0.75em; font-weight: 700; color: var(--text); margin: 0;") 👤 Customer (Ani)
+                p(style="font-size: 0.7em; color: var(--text-muted); margin: 0;") ani@example.com / cust123
+
+        script.
+          function fillDemo(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+          }
+
         .bottom-text
           p
             | Belum punya akun?
