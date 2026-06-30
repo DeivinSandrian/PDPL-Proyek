@@ -289,12 +289,12 @@ router.post("/booking/:scheduleId", async (req, res) => {
             await conn.rollback();
             if (err.message === "SEAT_TAKEN") {
                 return res.send(
-                    "Maaf, salah satu kursi yang Anda pilih sudah dipesan orang lain. Silakan kembali dan pilih kursi lain.",
+                    "<script>alert('Maaf, salah satu kursi yang Anda pilih sudah dipesan orang lain. Silakan kembali dan pilih kursi lain.'); window.history.back();</script>",
                 );
             }
             console.error("Online booking transaction error:", err);
             res.send(
-                "Terjadi kesalahan database saat membuat pesanan. Silakan coba lagi.",
+                "<script>alert('Terjadi kesalahan database saat membuat pesanan. Silakan coba lagi.'); window.history.back();</script>",
             );
         } finally {
             conn.release();
@@ -302,7 +302,7 @@ router.post("/booking/:scheduleId", async (req, res) => {
     } catch (e) {
         console.error("Online booking error:", e);
         res.send(
-            "Terjadi kesalahan server saat membuat pesanan. Silakan coba lagi.",
+            "<script>alert('Terjadi kesalahan server saat membuat pesanan. Silakan coba lagi.'); window.history.back();</script>",
         );
     }
 });
