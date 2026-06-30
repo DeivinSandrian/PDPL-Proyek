@@ -276,6 +276,10 @@ main {
     outline: none;
     box-shadow: 0 0 0 3px rgba(224, 69, 69, 0.1);
 }
+.form-group select option {
+    background: #18181b;
+    color: var(--text);
+}
 
 /* ===== TABLE ===== */
 .table-wrapper {
