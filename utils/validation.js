@@ -24,6 +24,7 @@ class Validation {
      * @returns {boolean}
      */
     static isValidPrice(price) {
+        if (price === null || price === undefined || price === '') return false;
         const num = Number(price);
         return !isNaN(num) && num >= 0;
     }
@@ -34,6 +35,7 @@ class Validation {
      * @returns {boolean}
      */
     static isValidDate(dateStr) {
+        if (dateStr === null || dateStr === undefined || String(dateStr).trim() === '') return false;
         const d = new Date(dateStr);
         return d instanceof Date && !isNaN(d.getTime());
     }
