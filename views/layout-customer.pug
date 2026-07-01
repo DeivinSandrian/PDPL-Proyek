@@ -11,6 +11,11 @@ html(lang="id")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= title || 'TravelGo - Customer'
     link(rel="stylesheet" href="/css/style.css")
+    script.
+      (function() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      })();
   body
     header
       a.logo(href="/customer/dashboard")
@@ -22,6 +27,7 @@ html(lang="id")
         a(href="/customer/my-bookings") Pesanan Saya
         a(href="/customer/change-password") Ganti Password
         a(href="/logout" class="btn btn-secondary") Logout
+        button.theme-toggle-btn(type="button") ☀️
     main
       block content
 
@@ -78,3 +84,6 @@ html(lang="id")
       socket.on('adminNotification', function(data) {
           showNotificationToast(data.message);
       });
+
+    script(src="/js/theme-toggle.js")
+

@@ -11,11 +11,18 @@ html(lang="id")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= title || 'Admin - TravelGo'
     link(rel="stylesheet" href="/css/admin.css")
+    script.
+      (function() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      })();
   body
     header.navbar
       .container(style="display: flex; align-items: center; justify-content: space-between; width: 100%;")
         h1 TravelGo Admin
-        a.btn.btn-logout(href="/logout") Logout
+        div(style="display: flex; align-items: center; gap: 1rem;")
+          button.theme-toggle-btn(type="button") ☀️
+          a.btn.btn-logout(href="/logout") Logout
     aside.sidebar
       ul
         li: a(href="/admin/dashboard") Dashboard
@@ -27,3 +34,6 @@ html(lang="id")
         li: a(href="/admin/notifications") Notifikasi
     main.content
       block content
+
+    script(src="/js/theme-toggle.js")
+

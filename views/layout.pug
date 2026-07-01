@@ -11,6 +11,11 @@ html(lang="id")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title= title || 'TravelGo'
     link(rel="stylesheet" href="/css/style.css")
+    script.
+      (function() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      })();
   body
     header
       a.logo(href="/")
@@ -20,5 +25,9 @@ html(lang="id")
       nav.nav-links
         a(href="/") Home
         a(href="/login" class="btn btn-primary") Login
+        button.theme-toggle-btn(type="button") ☀️
     main
       block content
+
+    script(src="/js/theme-toggle.js")
+
