@@ -42,6 +42,8 @@ block content
                     span.badge.badge-confirmed Confirmed
                   else if b.status === 'cancelled'
                     span.badge.badge-canceled Cancelled
+                  else if b.status === 'expired'
+                    span.badge.badge-canceled Expired
                   else if b.status === 'refunded'
                     span.badge.badge-refunded Refunded
                 td #{new Date(b.created_at).toLocaleString('id-ID')}

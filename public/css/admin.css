@@ -253,6 +253,16 @@ tbody tr:hover {
     border-color: var(--danger);
     color: var(--danger);
 }
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+.btn-secondary:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+    border-color: var(--border-highlight);
+}
 
 /* ===== FORMS ===== */
 .form-grid {
