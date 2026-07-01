@@ -149,11 +149,8 @@ block content
       a.btn.btn-secondary(href=`/customer/booking/${booking.booking_id}/reschedule`) Reschedule Jadwal
     a.btn.btn-secondary(href="/customer/my-bookings") Kembali ke Pesanan Saya
 
-  script(src="/socket.io/socket.io.js")
   script.
-    const socket = io();
-    
-    // Listen for updates on this specific booking
+    // Listen for updates on this specific booking (uses global socket initialized in layout)
     socket.on('bookingUpdate', function(data) {
       if (Number(data.id) === Number('#{booking.booking_id}')) {
         window.location.reload();

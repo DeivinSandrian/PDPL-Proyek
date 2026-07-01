@@ -23,3 +23,57 @@ html(lang="id")
         a(href="/logout" class="btn btn-secondary") Logout
     main
       block content
+
+    script(src="/socket.io/socket.io.js")
+    script.
+      const socket = io();
+      
+      function showNotificationToast(message) {
+          const toast = document.createElement('div');
+          toast.className = 'notif-toast';
+          toast.style.position = 'fixed';
+          toast.style.top = '24px';
+          toast.style.right = '24px';
+          toast.style.background = 'linear-gradient(135deg, var(--primary), oklch(55% 0.15 15))';
+          toast.style.color = '#ffffff';
+          toast.style.padding = '16px 24px';
+          toast.style.borderRadius = '12px';
+          toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+          toast.style.zIndex = '9999';
+          toast.style.fontFamily = "'Outfit', sans-serif";
+          toast.style.fontSize = '0.95rem';
+          toast.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(-20px)';
+          toast.style.transition = 'all 0.3s ease';
+          
+          toast.innerHTML = `
+              <div style="display: flex; align-items: flex-start; gap: 12px; max-width: 320px;">
+                  <div style="font-size: 1.2rem;">📢</div>
+                  <div style="flex: 1;">
+                      <strong style="display: block; margin-bottom: 4px; font-weight: 600; text-align: left;">Pengumuman TravelGo</strong>
+                      <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.9em; line-height: 1.4; text-align: left; display: block;">${message}</span>
+                  </div>
+                  <button onclick="this.closest('.notif-toast').remove()" style="background: transparent; border: none; color: #fff; opacity: 0.6; cursor: pointer; font-size: 1.1rem; padding: 0; line-height: 1; margin-left: 8px;">&times;</button>
+              </div>
+          `;
+          
+          document.body.appendChild(toast);
+          
+          setTimeout(() => {
+              toast.style.opacity = '1';
+              toast.style.transform = 'translateY(0)';
+          }, 10);
+          
+          setTimeout(() => {
+              if (toast.parentNode) {
+                  toast.style.opacity = '0';
+                  toast.style.transform = 'translateY(-20px)';
+                  setTimeout(() => toast.remove(), 300);
+              }
+          }, 8000);
+      }
+
+      socket.on('adminNotification', function(data) {
+          showNotificationToast(data.message);
+      });
